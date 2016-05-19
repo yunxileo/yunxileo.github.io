@@ -3,17 +3,27 @@
 <head>
   <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
   
-  <title>云稀里</title>
+  <title>缺失值处理 | 云稀里</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="自古求真皆寂寞，唯挑心灯伴夜霭">
-<meta property="og:type" content="website">
-<meta property="og:title" content="云稀里">
-<meta property="og:url" content="http://yunxileo.github.io/index.html">
+  <meta name="description" content="数据缺失的概念数据缺失是指在数据采集时由于某种原因应该得到而没有得到的数据。它指的是现有数据集中某个或某些属性的值是不完全的 。
+数据缺失机制在对缺失数据进行处理前，了解数据缺失的机制和形式是十分必要的。将数据集中不含缺失值的变量（属性）称为完全变量，数据集中含有缺失值的变量称为不完全变量。
+
+完全随机缺失（Missing Completely At Random,MCAR）：数据的缺失与不完全变">
+<meta property="og:type" content="article">
+<meta property="og:title" content="缺失值处理">
+<meta property="og:url" content="http://yunxileo.github.io/2016/05/19/缺失值处理/index.html">
 <meta property="og:site_name" content="云稀里">
-<meta property="og:description" content="自古求真皆寂寞，唯挑心灯伴夜霭">
+<meta property="og:description" content="数据缺失的概念数据缺失是指在数据采集时由于某种原因应该得到而没有得到的数据。它指的是现有数据集中某个或某些属性的值是不完全的 。
+数据缺失机制在对缺失数据进行处理前，了解数据缺失的机制和形式是十分必要的。将数据集中不含缺失值的变量（属性）称为完全变量，数据集中含有缺失值的变量称为不完全变量。
+
+完全随机缺失（Missing Completely At Random,MCAR）：数据的缺失与不完全变">
+<meta property="og:updated_time" content="2016-05-19T09:43:20.913Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="云稀里">
-<meta name="twitter:description" content="自古求真皆寂寞，唯挑心灯伴夜霭">
+<meta name="twitter:title" content="缺失值处理">
+<meta name="twitter:description" content="数据缺失的概念数据缺失是指在数据采集时由于某种原因应该得到而没有得到的数据。它指的是现有数据集中某个或某些属性的值是不完全的 。
+数据缺失机制在对缺失数据进行处理前，了解数据缺失的机制和形式是十分必要的。将数据集中不含缺失值的变量（属性）称为完全变量，数据集中含有缺失值的变量称为不完全变量。
+
+完全随机缺失（Missing Completely At Random,MCAR）：数据的缺失与不完全变">
   
     <link rel="alternative" href="/atom.xml" title="云稀里" type="application/atom+xml">
   
@@ -30,13 +40,8 @@
   
   <link rel="stylesheet" href="/css/style.css">
   
-      <style> .article { opacity: 0;} </style>
-  
   <link href="//cdn.bootcss.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-  
-    
-    
   
   
       <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
@@ -47,8 +52,8 @@
       var yiliaConfig = {
           fancybox: true,
           animate: true,
-          isHome: true,
-          isPost: false,
+          isHome: false,
+          isPost: true,
           isArchive: false,
           isTag: false,
           isCategory: false,
@@ -245,9 +250,7 @@
     </div>
     <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
 </nav>
-      <div class="body-wrap">
-  
-    <article id="post-缺失值处理" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-缺失值处理" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
       <a href="/2016/05/19/缺失值处理/" class="article-date">
@@ -263,12 +266,27 @@
       <header class="article-header">
         
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/05/19/缺失值处理/">缺失值处理</a>
+    <h1 class="article-title" itemprop="name">
+      缺失值处理
     </h1>
   
 
       </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/机器学习/">机器学习</a><a class="article-category-link" href="/categories/机器学习/数据预处理/">数据预处理</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/缺失值处理/">缺失值处理</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
       
     
     <div class="article-entry" itemprop="articleBody">
@@ -362,135 +380,105 @@ $$(\sum_{i=1}^{n}(\pi_{i} \hat{p}_{i})^{-1} y_{i} /\sum_{i=1}^{n}(\pi_{i} \hat{p
       
     </div>
     
-    <div class="article-info article-info-index">
-      
-      
-    <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/机器学习/">机器学习</a><a class="article-category-link" href="/categories/机器学习/数据预处理/">数据预处理</a>
-    </div>
-
-
-      
-    <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/缺失值处理/">缺失值处理</a></li></ul>
-    </div>
-
-      
-      <div class="clearfix"></div>
-    </div>
-    
   </div>
   
-</article>
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-logistic-regression" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2016/05/16/logistic-regression/" class="article-date">
-      <time datetime="2016-05-16T15:57:47.000Z" itemprop="datePublished">2016-05-16</time>
-</a>
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2016/05/19/缺失值处理/">缺失值处理</a></p>
+        <p><span>文章作者:</span><a href="/" title="回到主页">yunxileo</a></p>
+        <p><span>发布时间:</span>2016-05-19, 17:37:41</p>
+        <p><span>最后更新:</span>2016-05-19, 17:43:20</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2016/05/19/缺失值处理/" title="缺失值处理">http://yunxileo.github.io/2016/05/19/缺失值处理/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://yunxileo.github.io/2016/05/19/缺失值处理/　　作者: yunxileo" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+        </p>
     </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
+
+
+
+    <nav id="article-nav">
         
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/05/16/logistic-regression/">logistic_regression</a>
-    </h1>
-  
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2016/05/16/logistic-regression/">
+                    logistic_regression
+                </a>
+            </div>
+        
+    </nav>
 
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-          
-        <h2 id="引子"><a href="#引子" class="headerlink" title="引子"></a>引子</h2><p>大家在日常的工作和学习中是不是经常有这样的疑问：邮箱是如何自动区分正常邮件和垃圾邮件的呢？银行是如何判断是否通过你的贷款申请的呢？经常收到某种商品的推荐信息，商家又是如何知道你对这个商品感兴趣的呢？</p>
-<p>为了回答上述疑问，这一期给大家介绍逻辑回归算法。逻辑回归，也称Logistic Regression,主要区别于一般的线性回归模型。我们知道，一般的线性回归模型都是处理因变量是连续变量的问题，如果因变量是分类变量，一般线性回归模型就不再适用。逻辑回归算法因其原理的相对简单，可解释性强等优点已成为互联网领域最常用也最有影响力的分类算法之一，同时它还可以作为众多集成算法以及深度学习的基本组成单位，所以学好逻辑回归尤其重要。</p>
-<p>我们知道，一般的线性回归模型都是处理因变量是连续变量的问题，如果因变量是定性变量，一般线性回归模型就不再适用了。</p>
-<p>或许有人会有疑问，为什么对于分类问题，逻辑回归行而一般的线性回归模型却不行呢？二者的区别又是什么呢？下面将从现实意义和数学理论上给出解释。</p>
-<h3 id="定性因变量回归方程的意义"><a href="#定性因变量回归方程的意义" class="headerlink" title="定性因变量回归方程的意义"></a>定性因变量回归方程的意义</h3><p>设因变量y是只取0,1两个值，考虑简单线性回归模 $y=\beta_{0}+\beta_{1}x_{i} +\varepsilon$ <br>在这种y只取0和1两个值的情况下，因变量均值  $E(y_{i})=\beta_{0}+\beta_{1}x_{i}$  有着特殊的意义。<br>由于$y$是0-1型随机变量，得到如下概率分布<br> $$ P(y = 1)= p$$<br> $$ P(y = 0)= 1-p $$ <br>根据离散型随机变量期望值的定义，可得<br>$$ E(y)=1( p )+0(1-p)= p $$<br>所以，作为由回归函数给定的因变量均值，$E(y)=\beta_{0}+\beta_{1}x$是自变量水平为$x$时$y=1$的概率。</p>
-<h3 id="逻辑回归模型的特别之处"><a href="#逻辑回归模型的特别之处" class="headerlink" title="逻辑回归模型的特别之处"></a>逻辑回归模型的特别之处</h3><p>对于一般的线性模型<br>
-$$y=\beta_{0}+\beta_{1}x +\varepsilon$$
-<br>误差项有大三假定条件：</p>
-<p>（1）误差项$\varepsilon$是一个期望为0的随机变量，即$E(\varepsilon)=0$</p>
-<p>（2）对于所有的$x$，$\varepsilon$的方差都相同，这意味着对于一个特定的x值，y的方差也都等于$\sigma^2$。</p>
-<p>（3）误差项$\varepsilon$是一个服从正态分布的随机变量，且相互独立，即$\varepsilon\sim N(0,\sigma^2)$。</p>
-<p>而在因变量y只能取0和1的逻辑回归模型，误差项  $\varepsilon=y-(\beta_{0}+\beta_{1}x)$ 显然是两点型的离散分布，不满足误差项正态分布的基本假定；同时误差项的方差 $Var(\varepsilon_{i})=Var(y_{i})=(\beta_{0}+\beta_{1}x_{i})(1-\beta_{0}-\beta_{1}x_{i})$,可以看出误差项随着$x$的不同水平而变化，是异方差，不满足线性回归的基本假定；当因变量为0和1时，回归方程代表的是概率分布，所以因变量的均值受到如下限制$0\leq E(y_{i})\leq1$,一般的线性回归方程不会有这种限制。而逻辑回归却利用一些数学变化巧妙的解决了这些的问题，请看下面一节。</p>
-<h3 id="从一般线性回归到逻辑回归"><a href="#从一般线性回归到逻辑回归" class="headerlink" title="从一般线性回归到逻辑回归"></a>从一般线性回归到逻辑回归</h3><p>当被解释变量$y$为0和1的二分类变量时，虽然无法采用一般的线性回归模型建模，但是可以借鉴其理论基础：</p>
-<p>第一，一般线性模型$p(y=1|x)=\beta_{0}+\beta_{1}x_{1}+\dots+\beta_{p}x_{p}$，方程左侧的概率$p$的取值范围为[0,1]，方程右边的额取值范围在$-\infty\sim +\infty$之间。如果对概率p做合理的变换，使其的取值范围与右侧吻合，则左侧和右侧可以通过等号连接起来。</p>
-<p>第二，一般线性模型$p(y=1|x)=\beta_{0}+\beta_{1}x_{1}+\dots+\beta_{p}x_{p}$，方程中的概率$p$与解释变量之间的关系是线性的。但在实际的应用中，它们之间的关系往往是非线性的。例如通过银行贷款申请的概率通常不会随着年收入（或者年龄等）的增长而线性增长。于是对概率$p$的变换应该是采用非线性变换。</p>
-<p>基于以上的分析，可采取一下两步变换：</p>
-<p>第一步，将概率$p$转换成$\Omega:\Omega=\frac{p}{1-p}$。其中，$\Omega$称为优势，是事件发生的概率与不发生的概率之比。这种变换是非线性的，且$\Omega$是$p$的单调函数，保证了$\Omega$和$p$增长的一致性，是模型易于理解。优势的取值范围在0和无穷大之间。</p>
-<p>第二步，将$\Omega$换成$ln\Omega:ln\Omega=ln\frac{p}{1-p}$。其中，$ln\Omega$称为$logit P$. </p>
-<p>上述的两步变换称为logit变换。经过logit变换，$logit P$的取值范围范围$-\infty\sim+\infty$，与一般线性回归模型右侧的取值范围吻合。同时$logitP$与$p$之间保持单调一致性。</p>
-<p>至此，用等号将$logitP$和一般线性模型的右侧连接起来，得到$logit P=\beta_{0}+\beta_{1}x_{1}+\dots+\beta_{p}x_{p}$,即为逻辑回归模型。这样我们就完成从一般线性模型到逻辑回归模型的演变。</p>
-<p>或许有人还会质疑logit变换的合理性，那么我们就继续往下扒。<br>从以上的推导和变换我们得到，$$ln\frac{p}{1-p}=\beta_{0}+\beta_1 x_{1}+\beta_2 x_{i}+\cdots +\beta_p x_{p}$$<br>故有 $p=\frac{1}{1+e^{-(\beta_{0}+\beta_1 x_{1}+\beta_2 x_{2}+\cdots +\beta_p x_{p})}}$，其为(0,1)型的Sigmoid函数，如下图所示。这是一个非线性函数，很好的体现了概率$p$与解释变量之间的非线性关系。</p>
-<h2 id="逻辑回归模型的解读"><a href="#逻辑回归模型的解读" class="headerlink" title="逻辑回归模型的解读"></a>逻辑回归模型的解读</h2><p>逻辑回归方程的右侧与一般线性回归方程的形式一致，可用类似的方法解释逻辑回归方程系数的含义，即当其他自变量保持不变时，自变量$x_i$每增加一个单位，$logitP$平均增加（或减少）$\beta_{i}$个单位。</p>
-<p>在实际应用中，人们更关心自变量为优势$\Omega$带来的变化，其中优势$\Omega=\frac{p}{1-p}$，表示某一事件的发生概率与不发生概率之比。同时我们还会通过优势比来进行不同组别之间风险的对比分析。</p>
-<p>在逻辑回归方程中，$\Omega=e^{(\beta_{0}+\beta_1 x_{1}+\beta_2 x_{2}+\cdots +\beta_p x_{p})}$，当其他自变量不变时，$x_{i}$每增加一个单位，优势变为原来优势的$e^{\beta_i}$倍，优势比即为$e^{\beta_i}$。</p>
-<h2 id="逻辑回归模型的参数估计"><a href="#逻辑回归模型的参数估计" class="headerlink" title="逻辑回归模型的参数估计"></a>逻辑回归模型的参数估计</h2><p>设y是0-1型变量，$x_{1},x_{2},\cdots ,x_{p}$是与y相关的确定性变量，n组观测数据为$(x_{i1},x_{i2},\cdots ,x_{ip};y_{i})(i=1,2,\cdots,n)$,其中，$y_{1},y_{2},\cdots ,y_{n}$是取值0或1的随机变量，$y_{i}$与$x_{i1},x_{i2},\cdots ,x_{ip}$的关系如下：<br> 
-$$E(y_{i})=p_{i}=f(\beta_{0}+\beta_1 x_{i1}+\beta_2 x_{i2}+\cdots +\beta_p x_{ip})$$
- <br>其中，函数f(x)是值域在[0,1]区间内的单调增函数。对于逻辑回归<br> 
-$$f(x)=\frac{e^{x}}{1+e^{x}}$$
- <br>于是$y_{i}$是均值为$p_{i}=f(\beta_{0}+\beta_1 x_{i1}+\beta_2 x_{i2}+\cdots +\beta_p x_{ip})$的0-1分布，概率函数为<br> 
-$$P(y_{i}=1)=p_{i}$$
-$$P(y_{i}=0)=1-p_{i}$$
-<br>可以把$y_{i}$的概率函数合写为<br> 
-$$P(y_{i})=p_{i}^{y_{i}}(1-p_{i})^{1-y_{i}},y_{i}=0,1;i=1,2,\cdots,n$$
- <br>于是，$y_{1},y_{2},\cdots ,y_{n}$的似然函数为<br> 
-$$L=\prod_{i=1}^{n}P(y_{i})=\prod_{i=1}^{n}p_{i}^{y_{i}}(1-p_i)^{1-y_i}$$
- <br>对似然函数取自然对数，得<br> 
-$$lnL=\sum_{i=1}^{n}[y_i lnp_i+(1-y_i)ln(1-p_i)]\\
-   =\sum_{i=1}^{n}[y_i ln\frac{p_i}{(1-p_i)}+ln(1-p_i)]$$
-  <br>对于logistic回归，将<br> 
-$$p_i=\frac{e^{(\beta_{0}+\beta_1 x_{i1}+\beta_2 x_{i2}+\cdots +\beta_p x_{ip})}}{1+e^{(\beta_{0}+\beta_1 x_{i1}+\beta_2 x_{i2}+\cdots +\beta_p x_{ip})}}$$
- <br>代入得<br> 
-$$lnL=\sum_{i=1}^{n}[y_i (\beta {0}+\beta_1 x_{i1}+\beta_2 x_{i2}+\cdots +\beta_p x_{ip})-ln(1+e^{(\beta_{0}+\beta_1 x_{i1}+\beta_2 x_{i2}+\cdots +\beta_p x_{ip})})]$$
- <br>最大似然估计就是选取$\beta_{0},\beta_1,\beta_2,\cdots ,\beta_p$的估计值$\hat{\beta}_0,\hat{\beta}_1,\hat{\beta}_2,\cdots,\hat{\beta}_p$，使上式最大。同时，作为一个最优化问题，可以采用梯度下降法和牛顿法等最优化算法。</p>
-<h2 id="逻辑回归模型的检验"><a href="#逻辑回归模型的检验" class="headerlink" title="逻辑回归模型的检验"></a>逻辑回归模型的检验</h2><p>逻辑回归方程的显著性检验的目的是检验所有自变量与$logitP$的线性关系是否显著，是否可以选择线性模型。原假设是假设各回归系数同时为0，自变量全体与$logitP$的线性关系不显著。如果方程中的诸多自变量对$logitP$的线性解释有显著意义，那么必然会使回归方程对样本的拟合得到显著提高。可通过对数似然比测度拟合程度是否有所提高。</p>
-<p>我们通常采用似然比检验统计量$-ln(\frac{L}{L_{x_{i}}})^2$也可称为似然比卡方,其中$L$表示引入变量$x_{i}$前回归方程的似然函数值，$L_{x_{i}}$表示引入变量$x_{i}$后回归方程的似然函数值。似然比检验统计量越大表明引入变量$x_{i}$越有意义。如果似然比卡方观测值的概率p值小于给定的显著性水平，不接受原假设，即认为自变量全体与$logitP$之间的线性关系显著。反之，线性关系不显著。</p>
-<h2 id="回归系数的显著性检验"><a href="#回归系数的显著性检验" class="headerlink" title="回归系数的显著性检验"></a>回归系数的显著性检验</h2><p>逻辑回归系数的显著性检验是检验方程中各变量与$logitP$之间是否具有线性关系。原假设是假设变量$x_{i}$与$logitP$之间的线性关系不显著，即$\beta_{i}=0$。</p>
-<h2 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h2><p>逻辑回归虽然虽然简单，但是因为其运算过程简单，而且分类效果不会太差，所以在业界应用广泛。我们大名鼎鼎的围棋高手AlphaGo在快速走子的过程中，也有用到该算法哟。</p>
-
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-    <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/机器学习/">机器学习</a><a class="article-category-link" href="/categories/机器学习/逻辑回归/">逻辑回归</a>
-    </div>
-
-
-      
-    <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/逻辑回归/">逻辑回归</a></li></ul>
-    </div>
-
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
   
 </article>
 
+    <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#数据缺失的概念"><span class="toc-number">1.</span> <span class="toc-text">数据缺失的概念</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#数据缺失机制"><span class="toc-number">2.</span> <span class="toc-text">数据缺失机制</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#数据缺失的处理方法"><span class="toc-number">3.</span> <span class="toc-text">数据缺失的处理方法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#删除法"><span class="toc-number">3.1.</span> <span class="toc-text">删除法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#加权方法"><span class="toc-number">3.2.</span> <span class="toc-text">加权方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#基于插补的方法"><span class="toc-number">3.3.</span> <span class="toc-text">基于插补的方法</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#单一插补"><span class="toc-number">3.3.1.</span> <span class="toc-text">单一插补</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#随机插补"><span class="toc-number">3.3.2.</span> <span class="toc-text">随机插补</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#多重插补"><span class="toc-number">3.3.3.</span> <span class="toc-text">多重插补</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#几何插补"><span class="toc-number">3.3.4.</span> <span class="toc-text">几何插补</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#基于模型的方法"><span class="toc-number">3.4.</span> <span class="toc-text">基于模型的方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#不对缺失值进行处理"><span class="toc-number">3.5.</span> <span class="toc-text">不对缺失值进行处理</span></a></li></ol></li></ol>
+</div>
+<style>
+    .left-col .switch-btn {
+        display: none;
+    }
+    .left-col .switch-area {
+        display: none;
+    }
+</style>
+
+<input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+<script>
+    var valueHide = "隐藏目录";
+    var valueShow = "显示目录";
+
+    if ($(".left-col").is(":hidden")) {
+        $("#tocButton").attr("value", valueShow);
+    }
+
+    $("#tocButton").click(function() {
+        if ($("#toc").is(":hidden")) {
+            $("#tocButton").attr("value", valueHide);
+            $("#toc").slideDown(320);
+            $(".switch-btn, .switch-area").fadeOut(300);
+        }
+        else {
+            $("#tocButton").attr("value", valueShow);
+            $("#toc").slideUp(350);
+            $(".switch-btn, .switch-area").fadeIn(500);
+        }
+    })
+
+    if ($(".toc").length < 1) {
+        $("#toc, #tocButton").hide();
+        $(".switch-btn, .switch-area").show();
+    }
+</script>
+
+
+
+
+
+    
+<div class="share">
+    
+        <div class="bdsharebuttonbox">
+            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
+            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
+            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
+            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
+            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
+            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></i></a>
+        </div>
+        <script>
+            window._bd_share_config={
+                "common":{"bdSnsKey":{},"bdText":"缺失值处理　| 云稀里　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+        </script>
+    
+
+    
+</div>
 
 
 
@@ -498,9 +486,53 @@ $$lnL=\sum_{i=1}^{n}[y_i (\beta {0}+\beta_1 x_{i1}+\beta_2 x_{i2}+\cdots +\beta_
 
 
 
+    
+      <div class="duoshuo" id="comments">
+    <!-- 多说评论框 start -->
+    <div class="ds-thread" data-thread-key="2016/05/19/缺失值处理/" data-title="缺失值处理" data-url="http://yunxileo.github.io/2016/05/19/缺失值处理/"></div>
+    <!-- 多说评论框 end -->
+    <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+    <script type="text/javascript">
+    var duoshuoQuery = {short_name:"yunxileo"};
+    (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0] 
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+    </script>
+    <!-- 多说公共JS代码 end -->
+</div>
 
-  
-  
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/2016/05/16/logistic-regression/" title="下一篇: logistic_regression">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2016/05/19/缺失值处理/">缺失值处理</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/05/16/logistic-regression/">logistic_regression</a></li></ul>
+
+
+
+
+    <script>
+        
+    </script>
 </div>
       <footer id="footer">
     <div class="outer">
