@@ -247,10 +247,10 @@
 </nav>
       <div class="body-wrap">
   
-    <article id="post-model-select" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-特征选择" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2016/09/27/model-select/" class="article-date">
+      <a href="/2016/09/27/特征选择/" class="article-date">
       <time datetime="2016-09-27T07:35:15.000Z" itemprop="datePublished">2016-09-27</time>
 </a>
     </div>
@@ -264,7 +264,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2016/09/27/model-select/">model_select</a>
+      <a class="article-title" href="/2016/09/27/特征选择/">model_select</a>
     </h1>
   
 
@@ -282,14 +282,16 @@
 <p>(2) 为什么要做特征选择</p>
 <p>在机器学习的实际应用中，特征数量往往较多，其中可能存在不相关的特征，特征之间也可能存在相互依赖，容易导致如下的后果：</p>
 <ul>
-<li><p>特征个数越多，分析特征、训练模型所需的时间就越长。</p>
-</li>
-<li><p>特征个数越多，容易引起“维度灾难”，模型也会越复杂，其推广能力会下降。</p>
-</li>
-<li><p>特征选择能剔除不相关(irrelevant)或冗余(redundant )的特征，从而达到减少特征个数，提高模型精确度，减少运行时间的目的。</p>
-</li>
-<li><p>选取出真正相关的特征简化了模型，使研究人员易于理解数据产生的过程。</p>
-</li>
+<li>特征个数越多，分析特征、训练模型所需的时间就越长。</li>
+</ul>
+<ul>
+<li>特征个数越多，容易引起“维度灾难”，模型也会越复杂，其推广能力会下降。</li>
+</ul>
+<ul>
+<li>特征选择能剔除不相关(irrelevant)或冗余(redundant )的特征，从而达到减少特征个数，提高模型精确度，减少运行时间的目的。</li>
+</ul>
+<ul>
+<li>选取出真正相关的特征简化了模型，使研究人员易于理解数据产生的过程。</li>
 </ul>
 <h3 id="1-3-特征选择的过程"><a href="#1-3-特征选择的过程" class="headerlink" title="1.3 特征选择的过程"></a>1.3 特征选择的过程</h3><p>Dash和Liu提出了一个特征选择的基本框架，认为一个典型的特征选择<br>算法由图所示的4个基本步骤组成</p>
 <p><img src="figures/process.png" alt="特征选择的过程"></p>
@@ -299,14 +301,16 @@
 <p>(4)子集验证：用于验证最终所选的特征子集的有效性。</p>
 <p>这四个步骤组成了一个完整的特征选择过程。</p>
 <ul>
-<li><p>子集产生是一个搜索过程， 用来产生待评价的特征子集。搜索过程的起始点可以是：不含任何特征的空集；含所有特征的全部特征集；随机的一个特征子集。前面两种情况，特征是迭代地添加或移除。</p>
-</li>
-<li><p>子集评估过程用于评价特征子集的优劣，即根据某个评价函数对子集进行评价，每进行一次特征子集的优劣评价，将新的评价值和之前保存的最优评价值进行比较，如果新的子集的评价值更优，则用它来取代之前的最优评价值。</p>
-</li>
-<li><p>子集评估之后要进行停止条件的判断，如果没有停止条件，搜索过程将无法停止。如图所示，子集产生和子集评估都可能影响到停止条件的选择，基于子集产生的停止条件有：a．达到预先指定的特征数目。b．达到预先给定的迭代次数。基于子集评估的停止条件有：a．增加或减少特征不能使特征子集的评价值有所提高。b．使评价函数取最优解的特征子集已经找到。</p>
-</li>
-<li><p>子集有效性验证是特征选择的最后一个步骤，在实际应用中是必不可少的，有效性验证通常用经过特征选择算法处理后的数据集进行训练和预测，将训练和预测的结果和在原始数据集上的结果进行比较，比较的内容包括预测的准确性、模型的复杂程度等。</p>
-</li>
+<li>子集产生是一个搜索过程， 用来产生待评价的特征子集。搜索过程的起始点可以是：不含任何特征的空集；含所有特征的全部特征集；随机的一个特征子集。前面两种情况，特征是迭代地添加或移除。</li>
+</ul>
+<ul>
+<li>子集评估过程用于评价特征子集的优劣，即根据某个评价函数对子集进行评价，每进行一次特征子集的优劣评价，将新的评价值和之前保存的最优评价值进行比较，如果新的子集的评价值更优，则用它来取代之前的最优评价值。</li>
+</ul>
+<ul>
+<li>子集评估之后要进行停止条件的判断，如果没有停止条件，搜索过程将无法停止。如图所示，子集产生和子集评估都可能影响到停止条件的选择，基于子集产生的停止条件有：a．达到预先指定的特征数目。b．达到预先给定的迭代次数。基于子集评估的停止条件有：a．增加或减少特征不能使特征子集的评价值有所提高。b．使评价函数取最优解的特征子集已经找到。</li>
+</ul>
+<ul>
+<li>子集有效性验证是特征选择的最后一个步骤，在实际应用中是必不可少的，有效性验证通常用经过特征选择算法处理后的数据集进行训练和预测，将训练和预测的结果和在原始数据集上的结果进行比较，比较的内容包括预测的准确性、模型的复杂程度等。</li>
 </ul>
 <blockquote>
 <h2 id="2-特征选择常用的方法"><a href="#2-特征选择常用的方法" class="headerlink" title="2.特征选择常用的方法"></a>2.特征选择常用的方法</h2></blockquote>
@@ -321,26 +325,28 @@
 <p>为了减少运算量，目前特征子集的搜索策略大都采用贪心算法（greedy algorithm），其核心思想是在每一步选择中，都采纳当前条件下最好的选择，从而获得组合优化问题的近似最优解。根据其实现的细节，又可将贪心算法分为三种：前向搜索 (forward search)，后向搜索(backward search)和双向搜索 (bidirectional search)。</p>
 <p>假定我们有一个特征集合${a_{1},a_{2},...,a_{d}}$,前向搜索的思想是:</p>
 <ul>
-<li><p>第一步我们可以将每一个特征看成一个候选子集，例如依据给定的评价标准，特征${a<em>{1}}$的效果最优，则子集为${a</em>{1}}$,于是将${a_{1}}$做为第一轮的选定集；</p>
-</li>
-<li><p>第二步，则是往已有的子集中加入下一个效果最优的特征变量，例如对于子集${a<em>{1},a</em>{i}}$，当 i=2 时效果最优，则新的子集确定为${a<em>{1},a</em>{2}}$。如此重复进行搜索，直到新一轮获得的子集效果不如前一轮，则搜索停止。</p>
-</li>
+<li>第一步我们可以将每一个特征看成一个候选子集，例如依据给定的评价标准，特征${a<em>{1}}$的效果最优，则子集为${a</em>{1}}$,于是将${a_{1}}$做为第一轮的选定集；</li>
+</ul>
+<ul>
+<li>第二步，则是往已有的子集中加入下一个效果最优的特征变量，例如对于子集${a_{1},a_{i}}$，当 i=2 时效果最优，则新的子集确定为${a_{1},a_{2}}$。如此重复进行搜索，直到新一轮获得的子集效果不如前一轮，则搜索停止。</li>
 </ul>
 <p>后向搜索的做法，是以包含全部特征的集合开始，逐步剔除特征，直到找到效果最优的子集。双向搜索则把前向搜索和后向搜索结合起来，不断在选定的子集中加入新特征，并同时剔除旧特征。</p>
-<p>因为采取的是贪心算法，它们仅考虑使本轮的子集最优，例如在第三轮假定选择$a<em>{5}$优于$a</em>{6}$,于是该轮的最优子集为${a<em>{1},a</em>{2},a<em>{5}}$，然后再第四轮中却可能是${a</em>{1},a<em>{2},a</em>{6},a<em>{8}}$比所有的${a</em>{1},a<em>{2},a</em>{5},a_{i}}$都更优。但是，若不进行穷举搜索，则这样的问题无法避免。</p>
+<p>因为采取的是贪心算法，它们仅考虑使本轮的子集最优，例如在第三轮假定选择$a_{5}$优于$a_{6}$,于是该轮的最优子集为${a_{1},a_{2},a_{5}}$，然后再第四轮中却可能是${a_{1},a_{2},a_{6},a_{8}}$比所有的${a_{1},a_{2},a_{5},a_{i}}$都更优。但是，若不进行穷举搜索，则这样的问题无法避免。</p>
 <p>这三类算法在R语言的stats包和MASS包中的线性回归建模中都实现了。</p>
 <h3 id="2-2-基于评价准测的特征选择方法"><a href="#2-2-基于评价准测的特征选择方法" class="headerlink" title="2.2 基于评价准测的特征选择方法"></a>2.2 基于评价准测的特征选择方法</h3><p>按照特征评价标准来分，根据评价函数与模型的关系，可以分为筛选式、封装式和嵌入式三种。</p>
 <h4 id="2-2-1-过滤式-Filter"><a href="#2-2-1-过滤式-Filter" class="headerlink" title="2.2.1 过滤式(Filter)"></a>2.2.1 过滤式(Filter)</h4><p>通常把先进行特征选择，再进行建模的方法称为过滤式（filter），它主要侧重于单个特征跟目标变量的相关性，此时特征选择的标准和模型优化标准并不一定相同，和下一步将要使用的机器学习算法没有必然联系。</p>
 <p>Dash和Liu把过滤式特征选择的评价标准分为四种，即关联度度量、距离度量、信息度量、以及一致性度量。</p>
 <ul>
-<li><p>关联性度量：<br>主要考察特征和类别的关联度以及特征间的关联度，即通常所说的相关性和冗余性。关联性度量有线性关联(如Pearson相关系数)和非线性关联(如基于信息熵的互信息、对称的不确定性等)</p>
-</li>
-<li><p>距离度量：运用距离度量进行特征选择是基于这样的假设：好的特征子集应该使得属于同一类的样本距离尽可能小，属于不同类的样本之间的距离尽可能远。常用的距离度量（相似性度量）包括欧氏距离、标准化欧氏距离、马氏距离以及基于概率距离度量的KL散度等。</p>
-</li>
-<li><p>信息度量：信息度量是把信息论中基于熵的评估标准应用得到特征选择中，如信息增益(Information Gain)、信息增益率(Information Gain Ratio)、基尼指数(Gini Index)、WOE(Weight of Evidence)以及IV(Informationvalue)等。</p>
-</li>
-<li><p>一致性度量：试图找到与全集相同分类能力的最小特征子集。不一致性定义为如果两个样本在选定的特征子集上取值相同，却属于不同的类。</p>
-</li>
+<li>关联性度量：<br>主要考察特征和类别的关联度以及特征间的关联度，即通常所说的相关性和冗余性。关联性度量有线性关联(如Pearson相关系数)和非线性关联(如基于信息熵的互信息、对称的不确定性等)</li>
+</ul>
+<ul>
+<li>距离度量：运用距离度量进行特征选择是基于这样的假设：好的特征子集应该使得属于同一类的样本距离尽可能小，属于不同类的样本之间的距离尽可能远。常用的距离度量（相似性度量）包括欧氏距离、标准化欧氏距离、马氏距离以及基于概率距离度量的KL散度等。</li>
+</ul>
+<ul>
+<li>信息度量：信息度量是把信息论中基于熵的评估标准应用得到特征选择中，如信息增益(Information Gain)、信息增益率(Information Gain Ratio)、基尼指数(Gini Index)、WOE(Weight of Evidence)以及IV(Informationvalue)等。</li>
+</ul>
+<ul>
+<li>一致性度量：试图找到与全集相同分类能力的最小特征子集。不一致性定义为如果两个样本在选定的特征子集上取值相同，却属于不同的类。</li>
 </ul>
 <p>下面简单地介绍常见的评价函数：</p>
 <p>(1) Pearson相关系数</p>
@@ -351,7 +357,8 @@
 <p>在R中，用cor函数求相关系数</p>
 <figure class="highlight cos"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">x</span> &lt;- rnorm(<span class="number">100</span>)</span><br><span class="line">cor(<span class="keyword">x</span>,<span class="keyword">x</span>^<span class="number">2</span>)</span><br><span class="line">-<span class="number">0.132433</span></span><br></pre></td></tr></table></figure>
 <p>(2)信息增益(Information Gain)</p>
-<p>假设存在离散变量Y，Y中的取值包括{y1,y2,…,ym} ，yi出现的概率为Pi。则Y的信息熵定义为：<br>$$H(Y)=-\sum<em>{i=1}^{m}P</em>{i}logP_{i}$$</p>
+<p>假设存在离散变量Y，Y中的取值包括{y1,y2,…,ym} ，yi出现的概率为Pi。则Y的信息熵定义为：<br>
+$$H(Y)=-\sum_{i=1}^{m}P_{i}logP_{i}$$</p>
 <p>信息熵有如下特性：若集合Y的元素分布越“纯”，则其信息熵越小；若Y分布越“混乱”，则其信息熵越大。在极端的情况下：若Y只能取一个值，即P1=1，则H(Y)取最小值0；反之若各种取值出现的概率都相等，即都是1/m，则H(Y)取最大值$log_{2}m$。</p>
 <p>在附加条件另一个变量X，而且知道$X=x_{i}$后，Y的条件信息熵(Conditional Entropy)表示为：<br>
 $$H(Y|X)=\sum_{i=1}^{m}P_{x=x_{i}}H(Y|X=x_{i})$$
@@ -379,7 +386,10 @@ $$IG(Y|X)=H(Y)-H(Y|X)$$
 <figure class="highlight cos"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">x</span> &lt;- rnorm(<span class="number">100</span>)</span><br><span class="line">dcor(<span class="keyword">x</span>, <span class="keyword">x</span>**<span class="number">2</span>)</span><br><span class="line"><span class="number">0.5880842</span></span><br></pre></td></tr></table></figure>
 <p>(5)WOE和IV</p>
 <p>WOE是一种基于目标变量的自变量编码方式，信用评分卡模型中最常用这种编码方式。例如将模型目标标量为1记为违约用户，对于目标变量为0记为正常用户；则WOE(weight of Evidence)其实就是自变量取某个值的时候对违约比例的一种影响。</p>
-<p>WOE的公式：$$woe<em>{i}=ln(\frac{p</em>{y=1}}{p<em>{y=0}})$$<br>IV的公式：$$IV</em>{i}=(p<em>{y=1}-p</em>{y=0})\times woe<em>{i}$$<br>        $$IV=\sum</em>{i=1}^{k}IV_{i}$$<br>例如下表：</p>
+<p>WOE的公式：$$woe_{i}=ln(\frac{p_{y=1}}{p_{y=0}})$$</p>
+<p>IV的公式：$$IV_{i}=(p_{y=1}-p_{y=0})\times woe_{i}$$</p>
+<pre><code>{% raw %}$$IV=\sum_{i=1}^{k}IV_{i}$${% endraw %}
+</code></pre><p>例如下表：</p>
 <table>
 <thead>
 <tr>
@@ -466,7 +476,8 @@ $$IV=\sum_{i=1}^{3}IV_{i}$$
 <h2 id="3-代码演练"><a href="#3-代码演练" class="headerlink" title="3  代码演练"></a>3  代码演练</h2></blockquote>
 <h3 id="1-基于前向搜索、后向搜索和双向搜索的回归模型在R中的实现："><a href="#1-基于前向搜索、后向搜索和双向搜索的回归模型在R中的实现：" class="headerlink" title="(1) 基于前向搜索、后向搜索和双向搜索的回归模型在R中的实现："></a>(1) 基于前向搜索、后向搜索和双向搜索的回归模型在R中的实现：</h3><p> 这三类算法在R语言的stats包和MASS包中的线性回归建模中都实现了。</p>
 <figure class="highlight haml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">library(MASS)</span><br><span class="line">initial &lt;- glm(Class ~ tau + VEGF + E4 + IL_3, data = training, family = binomial)</span><br><span class="line">stepAIC(initial, direction = "both")</span><br><span class="line">Start: AIC=189.46</span><br><span class="line">Class ~ tau + VEGF + E4 + IL_3</span><br><span class="line"></span><br><span class="line">Df Deviance AIC</span><br><span class="line">-<span class="ruby"> IL_3 <span class="number">1</span> <span class="number">179.69</span> <span class="number">187.69</span></span><br><span class="line"></span>-<span class="ruby"> E4 <span class="number">1</span> <span class="number">179.72</span> <span class="number">187.72</span></span><br><span class="line"></span>&lt;none&gt; 179.46 189.46</span><br><span class="line">-<span class="ruby"> VEGF <span class="number">1</span> <span class="number">242.77</span> <span class="number">250.77</span></span><br><span class="line"></span>-<span class="ruby"> tau <span class="number">1</span> <span class="number">288.61</span> <span class="number">296.61</span></span><br><span class="line"></span></span><br><span class="line">Step: AIC=187.69</span><br><span class="line">Class ~ tau + VEGF + E4</span><br><span class="line"></span><br><span class="line">Df Deviance AIC</span><br><span class="line">-<span class="ruby"> E4 <span class="number">1</span> <span class="number">179.84</span> <span class="number">185.84</span></span><br><span class="line"></span>&lt;none&gt; 179.69 187.69</span><br><span class="line">+ IL_3 1 179.46 189.46</span><br><span class="line">-<span class="ruby"> VEGF <span class="number">1</span> <span class="number">248.30</span> <span class="number">254.30</span></span><br><span class="line"></span>-<span class="ruby"> tau <span class="number">1</span> <span class="number">290.05</span> <span class="number">296.05</span></span><br><span class="line"></span></span><br><span class="line">Step: AIC=185.84</span><br><span class="line">Class ~ tau + VEGF</span><br><span class="line"></span><br><span class="line">Df Deviance AIC</span><br><span class="line">&lt;none&gt; 179.84 185.84</span><br><span class="line">+ E4 1 179.69 187.69</span><br><span class="line">+ IL_3 1 179.72 187.72</span><br><span class="line">-<span class="ruby"> VEGF <span class="number">1</span> <span class="number">255.07</span> <span class="number">259.07</span></span><br><span class="line"></span>-<span class="ruby"> tau <span class="number">1</span> <span class="number">300.69</span> <span class="number">304.69</span></span><br><span class="line"></span></span><br><span class="line">Call: glm(formula = Class ~ tau + VEGF, family = binomial, data = training)</span><br><span class="line"></span><br><span class="line">Coefficients:</span><br><span class="line">(Intercept) tau VEGF</span><br><span class="line">9.8075 -4.2779 0.9761</span><br><span class="line"></span><br><span class="line">Degrees of Freedom: 266 Total (i.e. Null); 264 Residual</span><br><span class="line">Null Deviance: 313.3</span><br><span class="line">Residual Deviance: 179.8 AIC: 185.8</span><br></pre></td></tr></table></figure>
-<p>基于AIC准则，通过双向搜索我们得到了最优的分类模型。令step函数的中的参数 <figure class="highlight plain"><figcaption><span>= c("both", "backward", "forward")``` 分别表示双向搜索、前项搜索和后向搜索。</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">### (2) 基于IV的特征变量选择在R中的实现：</span><br><span class="line"></span><br><span class="line">在R中，smbinning包可以做变量的分箱、计算woe以及IV。用其自带数据集举例如下：</span><br></pre></td></tr></table></figure></p>
+<p>基于AIC准则，通过双向搜索我们得到了最优的分类模型。令step函数的中的参数 </p>
+<figure class="highlight plain"><figcaption><span>= c("both", "backward", "forward") ``` </span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">分别表示双向搜索、前项搜索和后向搜索。</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">### (2) 基于IV的特征变量选择在R中的实现：</span><br><span class="line"></span><br><span class="line">在R中，smbinning包可以做变量的分箱、计算woe以及IV。用其自带数据集举例如下：</span><br></pre></td></tr></table></figure>
 <h1 id="Package-loading-and-data-exploration"><a href="#Package-loading-and-data-exploration" class="headerlink" title="Package loading and data exploration"></a>Package loading and data exploration</h1><p>library(smbinning) # Load package and its data<br>data(chileancredit) # Load smbinning sample dataset (Chilean Credit)<br>str(chileancredit) # Quick description of the data</p>
 <p>‘data.frame’:    7702 obs. of  19 variables:<br> $ CustomerId       : chr  “0000000185” “0000000238” “0000000346” “0000000460” …<br> $ TOB              : int  44 79 102 NA 109 183 172 76 136 171 …<br> $ IncomeLevel      : Factor w/ 6 levels “0”,”1”,”2”,”3”,..: 2 2 2 2 NA NA 1 2 1 1 …<br> $ Bal01            : num  605 1006 299 645 218 …<br> $ MaxDqBin01       : Factor w/ 7 levels “0”,”1”,”2”,”3”,..: 1 1 1 1 1 1 1 1 1 1 …<br> $ MaxDqBin02       : Factor w/ 8 levels “0”,”1”,”2”,”3”,..: 1 1 1 1 1 1 1 1 1 1 …<br> $ MaxDqBin03       : Factor w/ 8 levels “0”,”1”,”2”,”3”,..: 1 1 1 1 1 1 1 2 1 1 …<br> $ MaxDqBin04       : Factor w/ 8 levels “0”,”1”,”2”,”3”,..: 1 1 1 1 1 1 1 1 1 1 …<br> $ MaxDqBin05       : Factor w/ 8 levels “0”,”1”,”2”,”3”,..: 1 1 1 1 1 1 1 1 1 1 …<br> $ MaxDqBin06       : Factor w/ 8 levels “0”,”1”,”2”,”3”,..: 1 1 1 1 1 1 1 1 1 1 …<br> $ MtgBal01         : num  0 0 0 0 0 0 0 0 0 0 …<br> $ NonBankTradesDq01: int  0 0 0 0 0 0 0 0 0 0 …<br> $ NonBankTradesDq02: int  0 0 0 0 0 0 0 0 0 0 …<br> $ NonBankTradesDq03: int  0 0 0 0 0 0 0 0 0 0 …<br> $ NonBankTradesDq04: int  0 0 0 0 0 0 0 1 0 0 …<br> $ NonBankTradesDq05: int  0 0 0 0 0 0 0 1 0 0 …<br> $ NonBankTradesDq06: int  0 0 0 0 0 0 0 1 0 0 …<br> $ FlagGB           : int  1 1 1 1 1 1 1 1 1 1 …<br> $ FlagSample       : int  1 1 1 1 1 1 1 1 1 1 …</p>
 <p>table(chileancredit$FlagGB) # Tabulate target variable</p>
@@ -476,28 +487,28 @@ $$IV=\sum_{i=1}^{3}IV_{i}$$
 <p>Cutpoint CntRec CntGood CntBad CntCumRec CntCumGood CntCumBad PctRec GoodRate<br>1    &lt;= 17   1138     909    229      1138        909       229 0.2405   0.7988<br>2    &lt;= 30    621     530     91      1759       1439       320 0.1312   0.8535<br>3    &lt;= 63   1064     985     79      2823       2424       399 0.2249   0.9258<br>4     &gt; 63   1427    1377     50      4250       3801       449 0.3016   0.9650<br>5  Missing    482     435     47      4732       4236       496 0.1019   0.9025<br>6    Total   4732    4236    496        NA         NA        NA 1.0000   0.8952<br>  BadRate    Odds LnOdds     WoE     IV<br>1  0.2012  3.9694 1.3786 -0.7662 0.1893<br>2  0.1465  5.8242 1.7620 -0.3828 0.0223<br>3  0.0742 12.4684 2.5232  0.3784 0.0277<br>4  0.0350 27.5400 3.3156  1.1708 0.2626<br>5  0.0975  9.2553 2.2252  0.0804 0.0006<br>6  0.1048  8.5403 2.1448  0.0000 0.5025</p>
 <h1 id="Summary-IV-application"><a href="#Summary-IV-application" class="headerlink" title="Summary IV application"></a>Summary IV application</h1><p>sumivt=smbinning.sumiv(chileancredit.train,y=”FlagGB”)<br>sumivt # Display table with IV by characteristic</p>
 <p>  Char     IV                  Process<br>5         MaxDqBin01 2.3771        Factor binning OK<br>6         MaxDqBin02 1.8599        Factor binning OK<br>12 NonBankTradesDq01 1.8129       Numeric binning OK<br>13 NonBankTradesDq02 1.4417       Numeric binning OK<br>7         MaxDqBin03 1.3856        Factor binning OK<br>14 NonBankTradesDq03 1.1819       Numeric binning OK<br>8         MaxDqBin04 1.0729        Factor binning OK<br>15 NonBankTradesDq04 0.8948       Numeric binning OK<br>9         MaxDqBin05 0.8844        Factor binning OK<br>16 NonBankTradesDq05 0.7511       Numeric binning OK<br>10        MaxDqBin06 0.6302        Factor binning OK<br>17 NonBankTradesDq06 0.5501       Numeric binning OK<br>2                TOB 0.5025       Numeric binning OK<br>3        IncomeLevel 0.3380        Factor binning OK<br>11          MtgBal01 0.1452       Numeric binning OK<br>4              Bal01 0.1379       Numeric binning OK<br>1         CustomerId     NA   Not numeric nor factor<br>18        FlagSample     NA Uniques values of x &lt; 10</p>
-<h1 id="Plotting-smbinning-sumiv"><a href="#Plotting-smbinning-sumiv" class="headerlink" title="Plotting smbinning.sumiv"></a>Plotting smbinning.sumiv</h1><p>smbinning.sumiv.plot(sumivt,cex=0.8) # Plot IV summary table<br><figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">![<span class="string">IV</span>](<span class="link">figures/iv.png</span>)</span><br><span class="line"></span><br><span class="line">通过IV的大小进行特征排序，从而达到特征选择的目的。</span><br><span class="line"></span><br><span class="line"><span class="section">### (3) 基于L1正则化的特征变选择在R中的实现：</span></span><br><span class="line"></span><br><span class="line">R语言中glmnet包可以实现L1正则化、L2正则化的分类与回归模型。</span><br></pre></td></tr></table></figure></p>
+<h1 id="Plotting-smbinning-sumiv"><a href="#Plotting-smbinning-sumiv" class="headerlink" title="Plotting smbinning.sumiv"></a>Plotting smbinning.sumiv</h1><p>smbinning.sumiv.plot(sumivt,cex=0.8) # Plot IV summary table<br><figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">![<span class="string">IV</span>](<span class="link">figures/iv.png</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">通过IV的大小进行特征排序，从而达到特征选择的目的。</span><br><span class="line"></span><br><span class="line"><span class="section">### (3) 基于L1正则化的特征变选择在R中的实现：</span></span><br><span class="line"></span><br><span class="line">R语言中glmnet包可以实现L1正则化、L2正则化的分类与回归模型。</span><br></pre></td></tr></table></figure></p>
 <p>library(glmnet)<br>library(ISLR)<br>Hitters=na.omit(Hitters)<br>x=model.matrix(Salary~.,data=Hitters)[,-1]<br>y=Hitters$Salary<br>grid=10^seq(10,-2,length=100)<br>lasso.model=glmnet(x,y,alpha=1,lambda=grid)</p>
 <p>#交叉验证，选择最优的lambda<br>cv.out=cv.glmnet(x,y,alpha=1,lambda=grid)<br>bestlam=cv.out$lambda.min<br>lasso.model2=glmnet(x,y,alpha=1,lambda=bestlam)<br>coef(lasso.model2)</p>
 <p>20 x 1 sparse Matrix of class “dgCMatrix”<br>                     s0<br>(Intercept)  24.6396990<br>AtBat         .<br>Hits          1.8499834<br>HmRun         .<br>Runs          .<br>RBI           .<br>Walks         2.1959762<br>Years         .<br>CAtBat        .<br>CHits         .<br>CHmRun        .<br>CRuns         0.2058514<br>CRBI          0.4095910<br>CWalks        .<br>LeagueN       .<br>DivisionW   -99.9733911<br>PutOuts       0.2158910<br>Assists       .<br>Errors        .<br>NewLeagueN     .<br><figure class="highlight elixir"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">通过这个实验可以看出，lasso的系数结果是稀疏的，<span class="number">19</span>个预测变量中<span class="number">13</span>个的系数为<span class="number">0</span>。即使用交叉验证选择<span class="variable">$\</span>lambda<span class="variable">$值</span>建立的lasso模型仅包含<span class="number">6</span>个预测变量。</span><br><span class="line"></span><br><span class="line"><span class="comment">### (4) 基于树模型的特征选择在R中的实现：</span></span><br><span class="line"></span><br><span class="line">在R语言中，基于树的模型，如随机森林、GBDT、XGBOOST等都可以输出变量的重要度，以随机森林为例。</span><br></pre></td></tr></table></figure></p>
 <p>library(randomForest)<br>library(mlbench)  </p>
 <h1 id="load-the-data"><a href="#load-the-data" class="headerlink" title="load the data"></a>load the data</h1><p>data(PimaIndiansDiabetes)<br>rf &lt;- randomForest(x=PimaIndiansDiabetes[,1:8],<br>          y=PimaIndiansDiabetes[,9],importance = T,ntree=500) </p>
 <p>barplot(rf$importance[,3],main=”输入重要性指标的柱形图”)<br>varImpPlot(rf,sort=TRUE,n.var=nrow(rf$importance))</p>
-<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">![<span class="string">输入重要性指标</span>](<span class="link">figures/bar.png</span>)</span><br><span class="line"></span><br><span class="line">![<span class="string">平均精确率减少与平均不纯度减少</span>](<span class="link">figures/rf.png</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">随机森林是基于决策树的集成模型，通过上图，我们可以很清楚地发现重要的特征。</span><br><span class="line"></span><br><span class="line"><span class="section">###　(5)基于递归特征消除法的特征选择在R中的实现：</span></span><br><span class="line"></span><br><span class="line">在R中，caret包可以使用递归特征消除法，主要使用rfe函数。</span><br><span class="line"></span><br><span class="line">rfe参数说明：</span><br><span class="line"></span><br><span class="line">x，预测变量的矩阵或数据框</span><br><span class="line"></span><br><span class="line">y，输出结果向量（数值型或因子型）</span><br><span class="line"></span><br><span class="line">sizes，用于测试的特定子集大小的整型向量</span><br><span class="line"></span><br><span class="line">rfeControl，用于指定预测模型和方法的一系列选项</span><br><span class="line"></span><br><span class="line">一些列函数可以用于rfeControl$functions，包括：线性回归（lmFuncs），随机森林（rfFuncs），朴素贝叶斯(nbFuncs)，bagged trees（treebagFuncs)和可以用于caret的train函数的函数（caretFuncs）。</span><br></pre></td></tr></table></figure>
-<h1 id="ensure-the-results-are-repeatable"><a href="#ensure-the-results-are-repeatable" class="headerlink" title="ensure the results are repeatable"></a>ensure the results are repeatable</h1><p>set.seed(7)  </p>
-<h1 id="load-the-library"><a href="#load-the-library" class="headerlink" title="load the library"></a>load the library</h1><p>library(mlbench)<br>library(caret)  </p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">![<span class="string">输入重要性指标</span>](<span class="link">/img/bar.png</span>)</span><br><span class="line"></span><br><span class="line">![<span class="string">平均精确率减少与平均不纯度减少</span>](<span class="link">figures/rf.png</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">随机森林是基于决策树的集成模型，通过上图，我们可以很清楚地发现重要的特征。</span><br><span class="line"></span><br><span class="line"><span class="section">###　(5)基于递归特征消除法的特征选择在R中的实现：</span></span><br><span class="line"></span><br><span class="line">在R中，caret包可以使用递归特征消除法，主要使用rfe函数。</span><br><span class="line"></span><br><span class="line">rfe参数说明：</span><br><span class="line"></span><br><span class="line">x，预测变量的矩阵或数据框</span><br><span class="line"></span><br><span class="line">y，输出结果向量（数值型或因子型）</span><br><span class="line"></span><br><span class="line">sizes，用于测试的特定子集大小的整型向量</span><br><span class="line"></span><br><span class="line">rfeControl，用于指定预测模型和方法的一系列选项</span><br><span class="line"></span><br><span class="line">一些列函数可以用于rfeControl$functions，包括：线性回归（lmFuncs），随机森林（rfFuncs），朴素贝叶斯(nbFuncs)，bagged trees（treebagFuncs)和可以用于caret的train函数的函数（caretFuncs）。</span><br></pre></td></tr></table></figure>
+<p>#ensure the results are repeatable<br>set.seed(7)  </p>
+<p>#load the library<br>library(mlbench)<br>library(caret)  </p>
 <h1 id="load-the-data-1"><a href="#load-the-data-1" class="headerlink" title="load the data"></a>load the data</h1><p>data(PimaIndiansDiabetes)  </p>
-<h1 id="define-the-control-using-a-random-forest-selection-function"><a href="#define-the-control-using-a-random-forest-selection-function" class="headerlink" title="define the control using a random forest selection function"></a>define the control using a random forest selection function</h1><p>control &lt;- rfeControl(functions=rfFuncs, method=”cv”, number=10)  </p>
+<p>#define the control using a random forest selection function<br>control &lt;- rfeControl(functions=rfFuncs, method=”cv”, number=10)  </p>
 <h1 id="run-the-RFE-algorithm"><a href="#run-the-RFE-algorithm" class="headerlink" title="run the RFE algorithm"></a>run the RFE algorithm</h1><p>results &lt;- rfe(PimaIndiansDiabetes[,1:8],<br>               PimaIndiansDiabetes[,9], sizes=c(1:8),<br>               rfeControl=control,metric = “Accuracy”,ntree=100)  </p>
-<h1 id="summarize-the-results"><a href="#summarize-the-results" class="headerlink" title="summarize the results"></a>summarize the results</h1><p>print(results)  </p>
+<p>#summarize the results<br>print(results)  </p>
 <p>Recursive feature selection<br>Outer resampling method: Cross-Validated (10 fold)<br>Resampling performance over subset size:</p>
 <p> Variables Accuracy  Kappa AccuracySD KappaSD Selected<br>         1   0.7082 0.3030    0.04902  0.1181<br>         2   0.7330 0.3920    0.06703  0.1564<br>         3   0.7409 0.4115    0.06525  0.1582<br>         4   0.7512 0.4409    0.06988  0.1691<br>         5   0.7553 0.4452    0.07909  0.1911<br>         6   0.7618 0.4583    0.08094  0.1897<br>         7   0.7631 0.4620    0.08448  0.1927        *<br>         8   0.7617 0.4615    0.07810  0.1789         </p>
 <p>The top 5 variables (out of 7):<br>   glucose, mass, age, pregnant, pedigree</p>
-<h1 id="list-the-chosen-features"><a href="#list-the-chosen-features" class="headerlink" title="list the chosen features"></a>list the chosen features</h1><p>predictors(results)  </p>
+<p>#list the chosen features<br>predictors(results)  </p>
 <p>[1] “glucose”  “mass”     “age”      “pregnant” “pedigree” “insulin”  “triceps”</p>
-<h1 id="plot-the-results"><a href="#plot-the-results" class="headerlink" title="plot the results"></a>plot the results</h1><p>plot(results, type=c(“g”, “o”)) </p>
+<p>#plot the results<br>plot(results, type=c(“g”, “o”)) </p>
 <p>```</p>
-<p><img src="figures/rfe.png" alt="image"></p>
+<p><img src="/img/rfe.png" alt="image"></p>
 <p>从案例中可以看出，通过递归特征消除，发现用所有变量中的某7个自变量的模型是最好的，并且找出了最重要的5个特征。</p>
 <blockquote>
 <h2 id="4-结束语"><a href="#4-结束语" class="headerlink" title="4  结束语"></a>4  结束语</h2></blockquote>
@@ -698,10 +709,10 @@ $$(\sum_{i=1}^{n}(\pi_{i} \hat{p}_{i})^{-1} y_{i} /\sum_{i=1}^{n}(\pi_{i} \hat{p
 
 
   
-    <article id="post-logistic-regression" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-逻辑回归的前世今生" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2016/05/16/logistic-regression/" class="article-date">
+      <a href="/2016/05/16/逻辑回归的前世今生/" class="article-date">
       <time datetime="2016-05-16T15:57:47.000Z" itemprop="datePublished">2016-05-16</time>
 </a>
     </div>
@@ -715,7 +726,7 @@ $$(\sum_{i=1}^{n}(\pi_{i} \hat{p}_{i})^{-1} y_{i} /\sum_{i=1}^{n}(\pi_{i} \hat{p
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2016/05/16/logistic-regression/">logistic_regression</a>
+      <a class="article-title" href="/2016/05/16/逻辑回归的前世今生/">logistic_regression</a>
     </h1>
   
 
