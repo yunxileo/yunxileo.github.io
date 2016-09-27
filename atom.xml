@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yunxileo.github.io/"/>
-  <updated>2016-05-19T09:43:20.913Z</updated>
+  <updated>2016-09-27T07:44:29.725Z</updated>
   <id>http://yunxileo.github.io/</id>
   
   <author>
@@ -14,6 +14,277 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>model_select</title>
+    <link href="http://yunxileo.github.io/2016/09/27/model-select/"/>
+    <id>http://yunxileo.github.io/2016/09/27/model-select/</id>
+    <published>2016-09-27T07:35:15.000Z</published>
+    <updated>2016-09-27T07:44:29.725Z</updated>
+    
+    <content type="html">&lt;blockquote&gt;
+&lt;h2 id=&quot;1-特征选择的概述&quot;&gt;&lt;a href=&quot;#1-特征选择的概述&quot; class=&quot;headerlink&quot; title=&quot;1.特征选择的概述&quot;&gt;&lt;/a&gt;1.特征选择的概述&lt;/h2&gt;&lt;/blockquote&gt;
+&lt;h3 id=&quot;1-1-特征工程的简介&quot;&gt;&lt;a href=&quot;#1-1-特征工程的简介&quot; class=&quot;headerlink&quot; title=&quot;1.1  特征工程的简介&quot;&gt;&lt;/a&gt;1.1  特征工程的简介&lt;/h3&gt;&lt;p&gt;相信每一个数据人都深刻地体会过这样一句话：“特征工程做不好，调参调到老”。业界更有这样的说法：“数据和特征决定了机器学习的上限，而模型和算法只是逼近这个上限而已”。由此可见，特征工程在机器学习中占有相当重要的地位。到底什么是特征工程，我认为并没有确切的定义，个人是这样理解的：特征工程是利用业务领域和数据科学领域的相关知识，创建使机器学习算法达到最优的特征的过程。特征工程主要包括特征抽取和特征选择两部分。特征抽取主要是依据相关领域知识提取特征，更多的依靠业务知识。下文将重点介绍特征选择。&lt;/p&gt;
+&lt;h3 id=&quot;1-2-特征选择的简介&quot;&gt;&lt;a href=&quot;#1-2-特征选择的简介&quot; class=&quot;headerlink&quot; title=&quot;1.2 特征选择的简介&quot;&gt;&lt;/a&gt;1.2 特征选择的简介&lt;/h3&gt;&lt;p&gt;(1) 什么是特征选择&lt;/p&gt;
+&lt;p&gt;特征选择 ( Feature Selection )也称特征子集选择( Feature Subset Selection , FSS ) ，或属性选择( Attribute Selection ) ，是指从全部特征中选取一个特征子集，使构造出来的模型更好。&lt;/p&gt;
+&lt;p&gt;(2) 为什么要做特征选择&lt;/p&gt;
+&lt;p&gt;在机器学习的实际应用中，特征数量往往较多，其中可能存在不相关的特征，特征之间也可能存在相互依赖，容易导致如下的后果：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;特征个数越多，分析特征、训练模型所需的时间就越长。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;特征个数越多，容易引起“维度灾难”，模型也会越复杂，其推广能力会下降。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;特征选择能剔除不相关(irrelevant)或冗余(redundant )的特征，从而达到减少特征个数，提高模型精确度，减少运行时间的目的。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;选取出真正相关的特征简化了模型，使研究人员易于理解数据产生的过程。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&quot;1-3-特征选择的过程&quot;&gt;&lt;a href=&quot;#1-3-特征选择的过程&quot; class=&quot;headerlink&quot; title=&quot;1.3 特征选择的过程&quot;&gt;&lt;/a&gt;1.3 特征选择的过程&lt;/h3&gt;&lt;p&gt;Dash和Liu提出了一个特征选择的基本框架，认为一个典型的特征选择&lt;br&gt;算法由图所示的4个基本步骤组成&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;figures/process.png&quot; alt=&quot;特征选择的过程&quot;&gt;&lt;/p&gt;
+&lt;p&gt;(1)子集产生：按照一定的搜索策略产生候选特征子集。&lt;/p&gt;
+&lt;p&gt;(2)子集评估：通过某个评价函数评估特征子集的优劣。&lt;/p&gt;
+&lt;p&gt;(3)停止条件：决定特征选择算法什么时候停止。&lt;/p&gt;
+&lt;p&gt;(4)子集验证：用于验证最终所选的特征子集的有效性。&lt;/p&gt;
+&lt;p&gt;这四个步骤组成了一个完整的特征选择过程。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;子集产生是一个搜索过程， 用来产生待评价的特征子集。搜索过程的起始点可以是：不含任何特征的空集；含所有特征的全部特征集；随机的一个特征子集。前面两种情况，特征是迭代地添加或移除。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;子集评估过程用于评价特征子集的优劣，即根据某个评价函数对子集进行评价，每进行一次特征子集的优劣评价，将新的评价值和之前保存的最优评价值进行比较，如果新的子集的评价值更优，则用它来取代之前的最优评价值。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;子集评估之后要进行停止条件的判断，如果没有停止条件，搜索过程将无法停止。如图所示，子集产生和子集评估都可能影响到停止条件的选择，基于子集产生的停止条件有：a．达到预先指定的特征数目。b．达到预先给定的迭代次数。基于子集评估的停止条件有：a．增加或减少特征不能使特征子集的评价值有所提高。b．使评价函数取最优解的特征子集已经找到。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;子集有效性验证是特征选择的最后一个步骤，在实际应用中是必不可少的，有效性验证通常用经过特征选择算法处理后的数据集进行训练和预测，将训练和预测的结果和在原始数据集上的结果进行比较，比较的内容包括预测的准确性、模型的复杂程度等。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;h2 id=&quot;2-特征选择常用的方法&quot;&gt;&lt;a href=&quot;#2-特征选择常用的方法&quot; class=&quot;headerlink&quot; title=&quot;2.特征选择常用的方法&quot;&gt;&lt;/a&gt;2.特征选择常用的方法&lt;/h2&gt;&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;按照特征子集的形成方式可以分为三种：完全搜索(Complete)、启发式搜索（heuristic）和随机搜索。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;按照特征评价标准来分，根据评价函数与模型的关系，可以分为筛选式、封装式和嵌入式三种。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&quot;2-1-基于特征子集的形成方式的特征选择方法&quot;&gt;&lt;a href=&quot;#2-1-基于特征子集的形成方式的特征选择方法&quot; class=&quot;headerlink&quot; title=&quot;2.1 基于特征子集的形成方式的特征选择方法&quot;&gt;&lt;/a&gt;2.1 基于特征子集的形成方式的特征选择方法&lt;/h3&gt;&lt;p&gt;基于特征子集的形成方式的特征选择方法主要有完全搜索(Complete)、启发式搜索(Heuristic)和随机搜索。&lt;/p&gt;
+&lt;p&gt;特征选择本质上是一个组合优化问题，求解组合优化问题最直接的方法就是搜索，理论上可以通过穷举法来搜索所有可能的特征组合，选择使得评价标准最优的特征子集作为最后的输出。如果我们有N个特征变量，则特征变量的状态集合中的元素个数就是$2^N$，通过穷举的方式进行求解的时间复杂度是指数级的 (O(2^{N} ))。&lt;/p&gt;
+&lt;p&gt;为了减少运算量，目前特征子集的搜索策略大都采用贪心算法（greedy algorithm），其核心思想是在每一步选择中，都采纳当前条件下最好的选择，从而获得组合优化问题的近似最优解。根据其实现的细节，又可将贪心算法分为三种：前向搜索 (forward search)，后向搜索(backward search)和双向搜索 (bidirectional search)。&lt;/p&gt;
+&lt;p&gt;假定我们有一个特征集合${a_{1},a_{2},...,a_{d}}$,前向搜索的思想是:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;第一步我们可以将每一个特征看成一个候选子集，例如依据给定的评价标准，特征${a&lt;em&gt;{1}}$的效果最优，则子集为${a&lt;/em&gt;{1}}$,于是将${a_{1}}$做为第一轮的选定集；&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;第二步，则是往已有的子集中加入下一个效果最优的特征变量，例如对于子集${a&lt;em&gt;{1},a&lt;/em&gt;{i}}$，当 i=2 时效果最优，则新的子集确定为${a&lt;em&gt;{1},a&lt;/em&gt;{2}}$。如此重复进行搜索，直到新一轮获得的子集效果不如前一轮，则搜索停止。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;后向搜索的做法，是以包含全部特征的集合开始，逐步剔除特征，直到找到效果最优的子集。双向搜索则把前向搜索和后向搜索结合起来，不断在选定的子集中加入新特征，并同时剔除旧特征。&lt;/p&gt;
+&lt;p&gt;因为采取的是贪心算法，它们仅考虑使本轮的子集最优，例如在第三轮假定选择$a&lt;em&gt;{5}$优于$a&lt;/em&gt;{6}$,于是该轮的最优子集为${a&lt;em&gt;{1},a&lt;/em&gt;{2},a&lt;em&gt;{5}}$，然后再第四轮中却可能是${a&lt;/em&gt;{1},a&lt;em&gt;{2},a&lt;/em&gt;{6},a&lt;em&gt;{8}}$比所有的${a&lt;/em&gt;{1},a&lt;em&gt;{2},a&lt;/em&gt;{5},a_{i}}$都更优。但是，若不进行穷举搜索，则这样的问题无法避免。&lt;/p&gt;
+&lt;p&gt;这三类算法在R语言的stats包和MASS包中的线性回归建模中都实现了。&lt;/p&gt;
+&lt;h3 id=&quot;2-2-基于评价准测的特征选择方法&quot;&gt;&lt;a href=&quot;#2-2-基于评价准测的特征选择方法&quot; class=&quot;headerlink&quot; title=&quot;2.2 基于评价准测的特征选择方法&quot;&gt;&lt;/a&gt;2.2 基于评价准测的特征选择方法&lt;/h3&gt;&lt;p&gt;按照特征评价标准来分，根据评价函数与模型的关系，可以分为筛选式、封装式和嵌入式三种。&lt;/p&gt;
+&lt;h4 id=&quot;2-2-1-过滤式-Filter&quot;&gt;&lt;a href=&quot;#2-2-1-过滤式-Filter&quot; class=&quot;headerlink&quot; title=&quot;2.2.1 过滤式(Filter)&quot;&gt;&lt;/a&gt;2.2.1 过滤式(Filter)&lt;/h4&gt;&lt;p&gt;通常把先进行特征选择，再进行建模的方法称为过滤式（filter），它主要侧重于单个特征跟目标变量的相关性，此时特征选择的标准和模型优化标准并不一定相同，和下一步将要使用的机器学习算法没有必然联系。&lt;/p&gt;
+&lt;p&gt;Dash和Liu把过滤式特征选择的评价标准分为四种，即关联度度量、距离度量、信息度量、以及一致性度量。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;关联性度量：&lt;br&gt;主要考察特征和类别的关联度以及特征间的关联度，即通常所说的相关性和冗余性。关联性度量有线性关联(如Pearson相关系数)和非线性关联(如基于信息熵的互信息、对称的不确定性等)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;距离度量：运用距离度量进行特征选择是基于这样的假设：好的特征子集应该使得属于同一类的样本距离尽可能小，属于不同类的样本之间的距离尽可能远。常用的距离度量（相似性度量）包括欧氏距离、标准化欧氏距离、马氏距离以及基于概率距离度量的KL散度等。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;信息度量：信息度量是把信息论中基于熵的评估标准应用得到特征选择中，如信息增益(Information Gain)、信息增益率(Information Gain Ratio)、基尼指数(Gini Index)、WOE(Weight of Evidence)以及IV(Informationvalue)等。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;一致性度量：试图找到与全集相同分类能力的最小特征子集。不一致性定义为如果两个样本在选定的特征子集上取值相同，却属于不同的类。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;下面简单地介绍常见的评价函数：&lt;/p&gt;
+&lt;p&gt;(1) Pearson相关系数&lt;/p&gt;
+&lt;p&gt;Pearson相关系数的数学公式为：$r=\frac{cov(X,Y)}{\sqrt{var(X)var(Y)}}$&lt;/p&gt;
+&lt;p&gt;Pearson相关系数是最常用的判断特征和响应变量（response variable）之间的线性关系的标准。结果的取值区间为[-1，1]，-1表示完全的负相关+1表示完全的正相关，0表示没有线性相关。&lt;br&gt;Pearson 相关系数的优点在于其计算简单，结果易于理解且易于比较；而其缺点在于不能反映变量之间的非线性关系,如果关系是非线性的，即便两个变量具有一一对应的关系，Pearson相关性也可能会接近0。&lt;/p&gt;
+&lt;p&gt;Python中，Scipy的 pearsonr 方法能够同时计算相关系数和p-value&lt;/p&gt;
+&lt;figure class=&quot;highlight cos&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;import numpy &lt;span class=&quot;keyword&quot;&gt;as&lt;/span&gt; np&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;from scipy.stats import pearsonr&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;x&lt;/span&gt; = np.random.normal(&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;, &lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;, &lt;span class=&quot;number&quot;&gt;100&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;print&lt;/span&gt; pearsonr(&lt;span class=&quot;keyword&quot;&gt;x&lt;/span&gt;, &lt;span class=&quot;keyword&quot;&gt;x&lt;/span&gt;**&lt;span class=&quot;number&quot;&gt;2&lt;/span&gt;)[&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;]&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;-&lt;span class=&quot;number&quot;&gt;0.2072&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;在R中，用cor函数求相关系数&lt;/p&gt;
+&lt;figure class=&quot;highlight cos&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;x&lt;/span&gt; &amp;lt;- rnorm(&lt;span class=&quot;number&quot;&gt;100&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;cor(&lt;span class=&quot;keyword&quot;&gt;x&lt;/span&gt;,&lt;span class=&quot;keyword&quot;&gt;x&lt;/span&gt;^&lt;span class=&quot;number&quot;&gt;2&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;-&lt;span class=&quot;number&quot;&gt;0.132433&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;(2)信息增益(Information Gain)&lt;/p&gt;
+&lt;p&gt;假设存在离散变量Y，Y中的取值包括{y1,y2,…,ym} ，yi出现的概率为Pi。则Y的信息熵定义为：&lt;br&gt;$$H(Y)=-\sum&lt;em&gt;{i=1}^{m}P&lt;/em&gt;{i}logP_{i}$$&lt;/p&gt;
+&lt;p&gt;信息熵有如下特性：若集合Y的元素分布越“纯”，则其信息熵越小；若Y分布越“混乱”，则其信息熵越大。在极端的情况下：若Y只能取一个值，即P1=1，则H(Y)取最小值0；反之若各种取值出现的概率都相等，即都是1/m，则H(Y)取最大值$log_{2}m$。&lt;/p&gt;
+&lt;p&gt;在附加条件另一个变量X，而且知道$X=x_{i}$后，Y的条件信息熵(Conditional Entropy)表示为：&lt;br&gt;
+$$H(Y|X)=\sum_{i=1}^{m}P_{x=x_{i}}H(Y|X=x_{i})$$
+&lt;br&gt;在加入条件X前后的Y的信息增益定义为:&lt;br&gt;
+$$IG(Y|X)=H(Y)-H(Y|X)$$
+&lt;br&gt;假设存在特征子集A和特征子集B，分类变量为C，若IG( C|A ) &amp;gt; IG( C|B ) ，则认为选用特征子集A的分类结果比B好，因此倾向于选用特征子集A。&lt;/p&gt;
+&lt;p&gt;(3)最大信息系数(Mutual information and maximal information coefficient,MIC)&lt;/p&gt;
+&lt;p&gt;Pearson相关系数不能反映变量之间的非线性关系；信息增益直接用于特征选择时通常变量需要先离散化，而且信息增益的结果对离散化的方式很敏感。但是最大信息系数克服了这两个问题。它首先寻找一种最优的离散化方式，然后把互信息取值转换成一种度量方式，取值区间在[0，1]。 &lt;/p&gt;
+&lt;p&gt;MIC的性质：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;对于所有无噪声并且非常数的函数关系，MIC的值都为1&lt;/li&gt;
+&lt;li&gt;对于两个有确定的函数关系的随机变量，不论这个函数关系是什么样的，MIC的值都是1&lt;/li&gt;
+&lt;li&gt;对于两个统计独立的随机变量MIC的值接近于0&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Python中，minepy 提供了MIC功能。&lt;/p&gt;
+&lt;p&gt;反过头来看$y=x^2$这个例子，MIC算出来的互信息值为1(最大的取值)。&lt;/p&gt;
+&lt;figure class=&quot;highlight cos&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;from minepy import MINE&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;m = MINE()&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;x&lt;/span&gt; = np.random.normal(&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;100&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;m.compute_score(&lt;span class=&quot;keyword&quot;&gt;x&lt;/span&gt;, &lt;span class=&quot;keyword&quot;&gt;x&lt;/span&gt;**&lt;span class=&quot;number&quot;&gt;2&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;print&lt;/span&gt; m.mic()&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;R中minerva包的mine函数可直计算出mic的值。&lt;/p&gt;
+&lt;figure class=&quot;highlight stylus&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;title&quot;&gt;library&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(minerva)&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;x &amp;lt;- rnorm(&lt;span class=&quot;number&quot;&gt;100&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;title&quot;&gt;mine&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(x,y=x^&lt;span class=&quot;number&quot;&gt;2&lt;/span&gt;)&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;variable&quot;&gt;$MIC&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;[&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;] &lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;可以看出，虽然x与$y=x^2$是函数关系，Pearson相关系数却很相小，但是通过MIC为1可以发现二者之间强烈的非线性关系。&lt;/p&gt;
+&lt;p&gt;(4)距离相关系数 (Distance correlation)&lt;/p&gt;
+&lt;p&gt;距离相关系数是针对 Pearson 相关系数只能表征线性关系的缺点而提出的。其思想是分别构建特征变量和响应变量的欧氏距离矩阵，并由此计算特征变量和响应变量的距离相关系数。详细的定义和计算过程可参考维基百科。&lt;/p&gt;
+&lt;p&gt;距离相关系数能够同时捕捉变量之间的线性和非线性相关。当距离相关系数为 0，则可断言两个变量相互独立（Pearson 相关系数为 0 不代表变量相互独立）。其缺点是与 Pearson 相关系数相比，其所需的运算量较大，而且取值范围为 [0, 1]，无法表征变量之间关联是正相关还是负相关。&lt;/p&gt;
+&lt;p&gt;R的 energy 包里提供了距离相关系数的实现&lt;/p&gt;
+&lt;figure class=&quot;highlight cos&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;x&lt;/span&gt; &amp;lt;- rnorm(&lt;span class=&quot;number&quot;&gt;100&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;dcor(&lt;span class=&quot;keyword&quot;&gt;x&lt;/span&gt;, &lt;span class=&quot;keyword&quot;&gt;x&lt;/span&gt;**&lt;span class=&quot;number&quot;&gt;2&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;number&quot;&gt;0.5880842&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;(5)WOE和IV&lt;/p&gt;
+&lt;p&gt;WOE是一种基于目标变量的自变量编码方式，信用评分卡模型中最常用这种编码方式。例如将模型目标标量为1记为违约用户，对于目标变量为0记为正常用户；则WOE(weight of Evidence)其实就是自变量取某个值的时候对违约比例的一种影响。&lt;/p&gt;
+&lt;p&gt;WOE的公式：$$woe&lt;em&gt;{i}=ln(\frac{p&lt;/em&gt;{y=1}}{p&lt;em&gt;{y=0}})$$&lt;br&gt;IV的公式：$$IV&lt;/em&gt;{i}=(p&lt;em&gt;{y=1}-p&lt;/em&gt;{y=0})\times woe&lt;em&gt;{i}$$&lt;br&gt;        $$IV=\sum&lt;/em&gt;{i=1}^{k}IV_{i}$$&lt;br&gt;例如下表：&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;变量(age)&lt;/th&gt;
+&lt;th&gt;bad(y=1人数)&lt;/th&gt;
+&lt;th&gt;good(y=0的人数)&lt;/th&gt;
+&lt;th&gt;woe&lt;/th&gt;
+&lt;th&gt;IV&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;0-18&lt;/td&gt;
+&lt;td&gt;10&lt;/td&gt;
+&lt;td&gt;50&lt;/td&gt;
+&lt;td&gt;log((10/40)/(50/100))&lt;/td&gt;
+&lt;td&gt;{(10/40)-(50/100)}log((10/40)/(50/100))&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;18-30&lt;/td&gt;
+&lt;td&gt;10&lt;/td&gt;
+&lt;td&gt;20&lt;/td&gt;
+&lt;td&gt;log((10/40)/(20/100))&lt;/td&gt;
+&lt;td&gt;{(10/40)-(20/100)}log((10/40)/(20/100))&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;30-50&lt;/td&gt;
+&lt;td&gt;20&lt;/td&gt;
+&lt;td&gt;30&lt;/td&gt;
+&lt;td&gt;log((20/40)/(30/100))&lt;/td&gt;
+&lt;td&gt;{(20/40)-(30/100)}log((20/40)/(30/100))&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;sum&lt;/td&gt;
+&lt;td&gt;40&lt;/td&gt;
+&lt;td&gt;100&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;表中以age年龄为某个自变量，由于年龄是连续型自变量，需要对其进行离散化处理，假设离散化分为3组，bad和good表示在这三组中违约用户和正常用户的数量分布，可以计算出每一组的WOE值和IV值，通过后面的公式可以看出，woe反映的是在自变量每个分组下违约用户对正常用户占比和总体中违约用户对正常用户占比之间的差异；从而可以直观的认为woe蕴含了自变量取值对于目标变量（违约概率）的影响。&lt;/p&gt;
+&lt;p&gt;该变量age的IV值为：&lt;br&gt;
+$$IV=\sum_{i=1}^{3}IV_{i}$$
+&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;从公式来看的话，其实IV衡量的是某一个变量的信息量，相当于是自变量woe值的一个加权求和，其值的大小决定了自变量对于目标变量的影响程度&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;从另一个角度来看的话，IV公式与信息熵的公式极其相似。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;变量的IV值表示着该变量对因变量的区分度，IV值越大，该变量的越有价值，从而可以用IV值来进行特征选择。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&quot;2-2-2-包裹式-Wrapper&quot;&gt;&lt;a href=&quot;#2-2-2-包裹式-Wrapper&quot; class=&quot;headerlink&quot; title=&quot;2.2.2 包裹式(Wrapper)&quot;&gt;&lt;/a&gt;2.2.2 包裹式(Wrapper)&lt;/h4&gt;&lt;p&gt;而把特征选择和模型优化的标准统一起来的方法则有包裹式（wrapper）和嵌入式（embedding）。包裹式的方法以模型的优化标准作为特征选择的标准，但仍然把特征选择和模型训练分为两个步骤。与过滤式特征选择不考虑后续学习器不同，包裹式特征选择直接把最终将要使用的学习器的性能作为特征子集的评价标准，比如准确率、召回率、AUC值、AIC 准则和 BIC 准则等评价标准。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;赤池信息准则（Akaike information criterion, AIC）&lt;br&gt;$$AIC=2k-2ln(L)$$&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;贝叶斯信息准则（Bayesian Information Criterions, BIC）&lt;br&gt;$$BIC=ln(n)*k-2ln(L)$$&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;其中k为参数数目，$L$是似然函数（likelihood function）,n是数据中观测值的数量。&lt;/p&gt;
+&lt;p&gt;AIC 和 BIC 的表达式中均包含了模型复杂度惩罚项和最大似然函数项。不同的地方在于，在 BIC 的表达式中，惩罚项的权重随观测值的增加而增加。因此当观测值数量较大时，只有显著关联的特征变量才会被保留，从而降低模型的复杂性。&lt;/p&gt;
+&lt;p&gt;在建模时，我们可以通过最小化 AIC 或 BIC 来选择模型的最优参数。由表达式可以看出，AIC 和 BIC 倾向于复杂度低（越小越好）和符合先验假设（越大越好）的模型。在简单线性回归中，似然函数是依据残差服从正态分布的先验假设构建的，即如果特征变量的加入能够使残差更接近正态分布，则认为这个特征能够显著改善线性回归模型。&lt;/p&gt;
+&lt;h4 id=&quot;2-2-3-嵌入式-Embedded&quot;&gt;&lt;a href=&quot;#2-2-3-嵌入式-Embedded&quot; class=&quot;headerlink&quot; title=&quot;2.2.3 嵌入式(Embedded)&quot;&gt;&lt;/a&gt;2.2.3 嵌入式(Embedded)&lt;/h4&gt;&lt;p&gt;嵌入式则是把特征选择和模型训练融为一体，两者在同一个优化的过程中完成，不再分为两个步骤，即在学习器训练过程中自动的进行了特征选择。最典型的有L1正则化以及决策树算法，如ID3、C4.5和CART算法等，决策树算法在树增长过程的每个递归步都必须选择一个特征，将样本集划分成较小的子集，选择特征的依据通常是划分后子节点的纯度，划分后子节点越纯，则说明划分效果越好，可见决策树生成的过程也就是特征选择的过程。&lt;/p&gt;
+&lt;p&gt;(1) L1正则化 &lt;/p&gt;
+&lt;p&gt;在优化理论中，正则化（regularization）是一类通过对解施加先验约束把不适定问题（ill-posed problem）转化为适定问题的常用技巧。例如，在线性回归模型中，当用最小二乘法估计线性回归的系数时，如果自变量存在共线性，系数的估计值将具有较大的方差，因而会影响后续参数的统计检验。如果在最小二乘法的参数估计表达式中添加L1正则项，则称为Lasso线性回归模型：&lt;/p&gt;
+&lt;p&gt;$$\widehat{\beta }=arg min_{\beta}[(Y-\beta X)^{T}(Y-\beta X)+\lambda|\beta|]$$&lt;/p&gt;
+&lt;p&gt;L1正则化将系数w的L1范数作为惩罚项加到损失函数上，由于正则项非零，这就迫使那些弱的特征所对应的系数变成0。因此L1正则化往往会使学到的模型很稀疏（系数w经常为0），这个特性使得L1正则化成为一种很好的特征选择方法。线性回归有Lasso回归，分类模型有L1逻辑回归。&lt;/p&gt;
+&lt;p&gt;(2) 基于树的模型&lt;/p&gt;
+&lt;p&gt;基于树的模型，如随机森林、GBDT、XGBOOST等都可以输出变量的重要度，从而达到特征选择的作用。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;平均不纯度减少 (mean decrease impurity)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;决策树中的每一个节点都是关于某个特征的条件，为的是将数据集按照不同的响应变量一分为二。利用不纯度可以确定节点（最优条件），对于分类问题，通常采用基尼不纯度或者信息增益 ，对于回归问题，通常采用的是方差或者最小二乘拟合。当训练决策树的时候，可以计算出每个特征减少了多少树的不纯度。对于一个决策树森林来说，可以算出每个特征平均减少了多少不纯度，并把它平均减少的不纯度作为特征选择的值。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;平均精确率减少 (Mean decrease accuracy)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;另一种常用的特征选择方法就是直接度量每个特征对模型精确率的影响。主要思路是打乱每个特征的特征值顺序，并且度量顺序变动对模型的精确率的影响。很明显，对于不重要的变量来说，打乱顺序对模型的精确率影响不会太大，但是对于重要的变量来说，打乱顺序就会降低模型的精确率。&lt;/p&gt;
+&lt;p&gt;(3)递归特征消除 (Recursive feature elimination ,RFE)&lt;/p&gt;
+&lt;p&gt;递归特征消除的主要思想是反复的构建模型（如SVM或者回归模型）然后选出最好的（或者最差的）的特征（可以根据系数来选），把选出来的特征放到一边，然后在剩余的特征上重复这个过程，直到所有特征都遍历了。这个过程中特征被消除的次序就是特征的排序。因此，这是一种寻找最优特征子集的贪心算法。&lt;/p&gt;
+&lt;p&gt;RFE的稳定性很大程度上取决于在迭代的时候底层用哪种模型。例如，假如RFE采用的普通的回归，没有经过正则化的回归是不稳定的，那么RFE就是不稳定的；假如采用的是Ridge，而用Ridge正则化的回归是稳定的，那么RFE就是稳定的。&lt;/p&gt;
+&lt;p&gt;Python 的 scikit-learn 模块中提供了一种循环特征剔除 (recursive feature elimination, RFE) 的实现，遵循的也是后向搜索的思路。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;h2 id=&quot;3-代码演练&quot;&gt;&lt;a href=&quot;#3-代码演练&quot; class=&quot;headerlink&quot; title=&quot;3  代码演练&quot;&gt;&lt;/a&gt;3  代码演练&lt;/h2&gt;&lt;/blockquote&gt;
+&lt;h3 id=&quot;1-基于前向搜索、后向搜索和双向搜索的回归模型在R中的实现：&quot;&gt;&lt;a href=&quot;#1-基于前向搜索、后向搜索和双向搜索的回归模型在R中的实现：&quot; class=&quot;headerlink&quot; title=&quot;(1) 基于前向搜索、后向搜索和双向搜索的回归模型在R中的实现：&quot;&gt;&lt;/a&gt;(1) 基于前向搜索、后向搜索和双向搜索的回归模型在R中的实现：&lt;/h3&gt;&lt;p&gt; 这三类算法在R语言的stats包和MASS包中的线性回归建模中都实现了。&lt;/p&gt;
+&lt;figure class=&quot;highlight haml&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;13&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;14&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;15&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;16&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;17&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;18&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;19&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;20&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;21&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;22&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;23&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;24&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;25&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;26&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;27&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;28&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;29&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;30&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;31&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;32&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;33&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;34&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;35&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;36&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;37&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;38&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;39&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;40&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;41&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;42&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;library(MASS)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;initial &amp;lt;- glm(Class ~ tau + VEGF + E4 + IL_3, data = training, family = binomial)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;stepAIC(initial, direction = &quot;both&quot;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Start: AIC=189.46&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Class ~ tau + VEGF + E4 + IL_3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Df Deviance AIC&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;-&lt;span class=&quot;ruby&quot;&gt; IL_3 &lt;span class=&quot;number&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;number&quot;&gt;179.69&lt;/span&gt; &lt;span class=&quot;number&quot;&gt;187.69&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;-&lt;span class=&quot;ruby&quot;&gt; E4 &lt;span class=&quot;number&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;number&quot;&gt;179.72&lt;/span&gt; &lt;span class=&quot;number&quot;&gt;187.72&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&amp;lt;none&amp;gt; 179.46 189.46&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;-&lt;span class=&quot;ruby&quot;&gt; VEGF &lt;span class=&quot;number&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;number&quot;&gt;242.77&lt;/span&gt; &lt;span class=&quot;number&quot;&gt;250.77&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;-&lt;span class=&quot;ruby&quot;&gt; tau &lt;span class=&quot;number&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;number&quot;&gt;288.61&lt;/span&gt; &lt;span class=&quot;number&quot;&gt;296.61&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Step: AIC=187.69&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Class ~ tau + VEGF + E4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Df Deviance AIC&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;-&lt;span class=&quot;ruby&quot;&gt; E4 &lt;span class=&quot;number&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;number&quot;&gt;179.84&lt;/span&gt; &lt;span class=&quot;number&quot;&gt;185.84&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&amp;lt;none&amp;gt; 179.69 187.69&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;+ IL_3 1 179.46 189.46&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;-&lt;span class=&quot;ruby&quot;&gt; VEGF &lt;span class=&quot;number&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;number&quot;&gt;248.30&lt;/span&gt; &lt;span class=&quot;number&quot;&gt;254.30&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;-&lt;span class=&quot;ruby&quot;&gt; tau &lt;span class=&quot;number&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;number&quot;&gt;290.05&lt;/span&gt; &lt;span class=&quot;number&quot;&gt;296.05&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Step: AIC=185.84&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Class ~ tau + VEGF&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Df Deviance AIC&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;lt;none&amp;gt; 179.84 185.84&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;+ E4 1 179.69 187.69&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;+ IL_3 1 179.72 187.72&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;-&lt;span class=&quot;ruby&quot;&gt; VEGF &lt;span class=&quot;number&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;number&quot;&gt;255.07&lt;/span&gt; &lt;span class=&quot;number&quot;&gt;259.07&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;-&lt;span class=&quot;ruby&quot;&gt; tau &lt;span class=&quot;number&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;number&quot;&gt;300.69&lt;/span&gt; &lt;span class=&quot;number&quot;&gt;304.69&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Call: glm(formula = Class ~ tau + VEGF, family = binomial, data = training)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Coefficients:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(Intercept) tau VEGF&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9.8075 -4.2779 0.9761&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Degrees of Freedom: 266 Total (i.e. Null); 264 Residual&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Null Deviance: 313.3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Residual Deviance: 179.8 AIC: 185.8&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;基于AIC准则，通过双向搜索我们得到了最优的分类模型。令step函数的中的参数 &lt;figure class=&quot;highlight plain&quot;&gt;&lt;figcaption&gt;&lt;span&gt;= c(&quot;both&quot;, &quot;backward&quot;, &quot;forward&quot;)``` 分别表示双向搜索、前项搜索和后向搜索。&lt;/span&gt;&lt;/figcaption&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;### (2) 基于IV的特征变量选择在R中的实现：&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;在R中，smbinning包可以做变量的分箱、计算woe以及IV。用其自带数据集举例如下：&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/p&gt;
+&lt;h1 id=&quot;Package-loading-and-data-exploration&quot;&gt;&lt;a href=&quot;#Package-loading-and-data-exploration&quot; class=&quot;headerlink&quot; title=&quot;Package loading and data exploration&quot;&gt;&lt;/a&gt;Package loading and data exploration&lt;/h1&gt;&lt;p&gt;library(smbinning) # Load package and its data&lt;br&gt;data(chileancredit) # Load smbinning sample dataset (Chilean Credit)&lt;br&gt;str(chileancredit) # Quick description of the data&lt;/p&gt;
+&lt;p&gt;‘data.frame’:    7702 obs. of  19 variables:&lt;br&gt; $ CustomerId       : chr  “0000000185” “0000000238” “0000000346” “0000000460” …&lt;br&gt; $ TOB              : int  44 79 102 NA 109 183 172 76 136 171 …&lt;br&gt; $ IncomeLevel      : Factor w/ 6 levels “0”,”1”,”2”,”3”,..: 2 2 2 2 NA NA 1 2 1 1 …&lt;br&gt; $ Bal01            : num  605 1006 299 645 218 …&lt;br&gt; $ MaxDqBin01       : Factor w/ 7 levels “0”,”1”,”2”,”3”,..: 1 1 1 1 1 1 1 1 1 1 …&lt;br&gt; $ MaxDqBin02       : Factor w/ 8 levels “0”,”1”,”2”,”3”,..: 1 1 1 1 1 1 1 1 1 1 …&lt;br&gt; $ MaxDqBin03       : Factor w/ 8 levels “0”,”1”,”2”,”3”,..: 1 1 1 1 1 1 1 2 1 1 …&lt;br&gt; $ MaxDqBin04       : Factor w/ 8 levels “0”,”1”,”2”,”3”,..: 1 1 1 1 1 1 1 1 1 1 …&lt;br&gt; $ MaxDqBin05       : Factor w/ 8 levels “0”,”1”,”2”,”3”,..: 1 1 1 1 1 1 1 1 1 1 …&lt;br&gt; $ MaxDqBin06       : Factor w/ 8 levels “0”,”1”,”2”,”3”,..: 1 1 1 1 1 1 1 1 1 1 …&lt;br&gt; $ MtgBal01         : num  0 0 0 0 0 0 0 0 0 0 …&lt;br&gt; $ NonBankTradesDq01: int  0 0 0 0 0 0 0 0 0 0 …&lt;br&gt; $ NonBankTradesDq02: int  0 0 0 0 0 0 0 0 0 0 …&lt;br&gt; $ NonBankTradesDq03: int  0 0 0 0 0 0 0 0 0 0 …&lt;br&gt; $ NonBankTradesDq04: int  0 0 0 0 0 0 0 1 0 0 …&lt;br&gt; $ NonBankTradesDq05: int  0 0 0 0 0 0 0 1 0 0 …&lt;br&gt; $ NonBankTradesDq06: int  0 0 0 0 0 0 0 1 0 0 …&lt;br&gt; $ FlagGB           : int  1 1 1 1 1 1 1 1 1 1 …&lt;br&gt; $ FlagSample       : int  1 1 1 1 1 1 1 1 1 1 …&lt;/p&gt;
+&lt;p&gt;table(chileancredit$FlagGB) # Tabulate target variable&lt;/p&gt;
+&lt;p&gt; 0    1&lt;br&gt; 636 5654&lt;/p&gt;
+&lt;h1 id=&quot;Training-and-testing-samples-Just-some-basic-formality-for-Modeling&quot;&gt;&lt;a href=&quot;#Training-and-testing-samples-Just-some-basic-formality-for-Modeling&quot; class=&quot;headerlink&quot; title=&quot;Training and testing samples (Just some basic formality for Modeling)&quot;&gt;&lt;/a&gt;Training and testing samples (Just some basic formality for Modeling)&lt;/h1&gt;&lt;p&gt;chileancredit.train=subset(chileancredit,FlagSample==1)&lt;br&gt;chileancredit.test=subset(chileancredit,FlagSample==0)&lt;/p&gt;
+&lt;h1 id=&quot;Package-application&quot;&gt;&lt;a href=&quot;#Package-application&quot; class=&quot;headerlink&quot; title=&quot;Package application&quot;&gt;&lt;/a&gt;Package application&lt;/h1&gt;&lt;p&gt;result=smbinning(df=chileancredit.train,y=”FlagGB”,x=”TOB”,p=0.05) # Run and save result&lt;br&gt;result$ivtable # Tabulation and Information Value&lt;/p&gt;
+&lt;p&gt;Cutpoint CntRec CntGood CntBad CntCumRec CntCumGood CntCumBad PctRec GoodRate&lt;br&gt;1    &amp;lt;= 17   1138     909    229      1138        909       229 0.2405   0.7988&lt;br&gt;2    &amp;lt;= 30    621     530     91      1759       1439       320 0.1312   0.8535&lt;br&gt;3    &amp;lt;= 63   1064     985     79      2823       2424       399 0.2249   0.9258&lt;br&gt;4     &amp;gt; 63   1427    1377     50      4250       3801       449 0.3016   0.9650&lt;br&gt;5  Missing    482     435     47      4732       4236       496 0.1019   0.9025&lt;br&gt;6    Total   4732    4236    496        NA         NA        NA 1.0000   0.8952&lt;br&gt;  BadRate    Odds LnOdds     WoE     IV&lt;br&gt;1  0.2012  3.9694 1.3786 -0.7662 0.1893&lt;br&gt;2  0.1465  5.8242 1.7620 -0.3828 0.0223&lt;br&gt;3  0.0742 12.4684 2.5232  0.3784 0.0277&lt;br&gt;4  0.0350 27.5400 3.3156  1.1708 0.2626&lt;br&gt;5  0.0975  9.2553 2.2252  0.0804 0.0006&lt;br&gt;6  0.1048  8.5403 2.1448  0.0000 0.5025&lt;/p&gt;
+&lt;h1 id=&quot;Summary-IV-application&quot;&gt;&lt;a href=&quot;#Summary-IV-application&quot; class=&quot;headerlink&quot; title=&quot;Summary IV application&quot;&gt;&lt;/a&gt;Summary IV application&lt;/h1&gt;&lt;p&gt;sumivt=smbinning.sumiv(chileancredit.train,y=”FlagGB”)&lt;br&gt;sumivt # Display table with IV by characteristic&lt;/p&gt;
+&lt;p&gt;  Char     IV                  Process&lt;br&gt;5         MaxDqBin01 2.3771        Factor binning OK&lt;br&gt;6         MaxDqBin02 1.8599        Factor binning OK&lt;br&gt;12 NonBankTradesDq01 1.8129       Numeric binning OK&lt;br&gt;13 NonBankTradesDq02 1.4417       Numeric binning OK&lt;br&gt;7         MaxDqBin03 1.3856        Factor binning OK&lt;br&gt;14 NonBankTradesDq03 1.1819       Numeric binning OK&lt;br&gt;8         MaxDqBin04 1.0729        Factor binning OK&lt;br&gt;15 NonBankTradesDq04 0.8948       Numeric binning OK&lt;br&gt;9         MaxDqBin05 0.8844        Factor binning OK&lt;br&gt;16 NonBankTradesDq05 0.7511       Numeric binning OK&lt;br&gt;10        MaxDqBin06 0.6302        Factor binning OK&lt;br&gt;17 NonBankTradesDq06 0.5501       Numeric binning OK&lt;br&gt;2                TOB 0.5025       Numeric binning OK&lt;br&gt;3        IncomeLevel 0.3380        Factor binning OK&lt;br&gt;11          MtgBal01 0.1452       Numeric binning OK&lt;br&gt;4              Bal01 0.1379       Numeric binning OK&lt;br&gt;1         CustomerId     NA   Not numeric nor factor&lt;br&gt;18        FlagSample     NA Uniques values of x &amp;lt; 10&lt;/p&gt;
+&lt;h1 id=&quot;Plotting-smbinning-sumiv&quot;&gt;&lt;a href=&quot;#Plotting-smbinning-sumiv&quot; class=&quot;headerlink&quot; title=&quot;Plotting smbinning.sumiv&quot;&gt;&lt;/a&gt;Plotting smbinning.sumiv&lt;/h1&gt;&lt;p&gt;smbinning.sumiv.plot(sumivt,cex=0.8) # Plot IV summary table&lt;br&gt;&lt;figure class=&quot;highlight markdown&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;![&lt;span class=&quot;string&quot;&gt;IV&lt;/span&gt;](&lt;span class=&quot;link&quot;&gt;figures/iv.png&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;通过IV的大小进行特征排序，从而达到特征选择的目的。&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;section&quot;&gt;### (3) 基于L1正则化的特征变选择在R中的实现：&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;R语言中glmnet包可以实现L1正则化、L2正则化的分类与回归模型。&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;library(glmnet)&lt;br&gt;library(ISLR)&lt;br&gt;Hitters=na.omit(Hitters)&lt;br&gt;x=model.matrix(Salary~.,data=Hitters)[,-1]&lt;br&gt;y=Hitters$Salary&lt;br&gt;grid=10^seq(10,-2,length=100)&lt;br&gt;lasso.model=glmnet(x,y,alpha=1,lambda=grid)&lt;/p&gt;
+&lt;p&gt;#交叉验证，选择最优的lambda&lt;br&gt;cv.out=cv.glmnet(x,y,alpha=1,lambda=grid)&lt;br&gt;bestlam=cv.out$lambda.min&lt;br&gt;lasso.model2=glmnet(x,y,alpha=1,lambda=bestlam)&lt;br&gt;coef(lasso.model2)&lt;/p&gt;
+&lt;p&gt;20 x 1 sparse Matrix of class “dgCMatrix”&lt;br&gt;                     s0&lt;br&gt;(Intercept)  24.6396990&lt;br&gt;AtBat         .&lt;br&gt;Hits          1.8499834&lt;br&gt;HmRun         .&lt;br&gt;Runs          .&lt;br&gt;RBI           .&lt;br&gt;Walks         2.1959762&lt;br&gt;Years         .&lt;br&gt;CAtBat        .&lt;br&gt;CHits         .&lt;br&gt;CHmRun        .&lt;br&gt;CRuns         0.2058514&lt;br&gt;CRBI          0.4095910&lt;br&gt;CWalks        .&lt;br&gt;LeagueN       .&lt;br&gt;DivisionW   -99.9733911&lt;br&gt;PutOuts       0.2158910&lt;br&gt;Assists       .&lt;br&gt;Errors        .&lt;br&gt;NewLeagueN     .&lt;br&gt;&lt;figure class=&quot;highlight elixir&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;通过这个实验可以看出，lasso的系数结果是稀疏的，&lt;span class=&quot;number&quot;&gt;19&lt;/span&gt;个预测变量中&lt;span class=&quot;number&quot;&gt;13&lt;/span&gt;个的系数为&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;。即使用交叉验证选择&lt;span class=&quot;variable&quot;&gt;$\&lt;/span&gt;lambda&lt;span class=&quot;variable&quot;&gt;$值&lt;/span&gt;建立的lasso模型仅包含&lt;span class=&quot;number&quot;&gt;6&lt;/span&gt;个预测变量。&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;### (4) 基于树模型的特征选择在R中的实现：&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;在R语言中，基于树的模型，如随机森林、GBDT、XGBOOST等都可以输出变量的重要度，以随机森林为例。&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;library(randomForest)&lt;br&gt;library(mlbench)  &lt;/p&gt;
+&lt;h1 id=&quot;load-the-data&quot;&gt;&lt;a href=&quot;#load-the-data&quot; class=&quot;headerlink&quot; title=&quot;load the data&quot;&gt;&lt;/a&gt;load the data&lt;/h1&gt;&lt;p&gt;data(PimaIndiansDiabetes)&lt;br&gt;rf &amp;lt;- randomForest(x=PimaIndiansDiabetes[,1:8],&lt;br&gt;          y=PimaIndiansDiabetes[,9],importance = T,ntree=500) &lt;/p&gt;
+&lt;p&gt;barplot(rf$importance[,3],main=”输入重要性指标的柱形图”)&lt;br&gt;varImpPlot(rf,sort=TRUE,n.var=nrow(rf$importance))&lt;/p&gt;
+&lt;figure class=&quot;highlight markdown&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;13&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;14&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;15&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;16&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;17&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;18&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;19&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;20&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;21&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;22&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;23&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;![&lt;span class=&quot;string&quot;&gt;输入重要性指标&lt;/span&gt;](&lt;span class=&quot;link&quot;&gt;figures/bar.png&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;![&lt;span class=&quot;string&quot;&gt;平均精确率减少与平均不纯度减少&lt;/span&gt;](&lt;span class=&quot;link&quot;&gt;figures/rf.png&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;随机森林是基于决策树的集成模型，通过上图，我们可以很清楚地发现重要的特征。&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;section&quot;&gt;###　(5)基于递归特征消除法的特征选择在R中的实现：&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;在R中，caret包可以使用递归特征消除法，主要使用rfe函数。&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;rfe参数说明：&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;x，预测变量的矩阵或数据框&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;y，输出结果向量（数值型或因子型）&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;sizes，用于测试的特定子集大小的整型向量&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;rfeControl，用于指定预测模型和方法的一系列选项&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;一些列函数可以用于rfeControl$functions，包括：线性回归（lmFuncs），随机森林（rfFuncs），朴素贝叶斯(nbFuncs)，bagged trees（treebagFuncs)和可以用于caret的train函数的函数（caretFuncs）。&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;h1 id=&quot;ensure-the-results-are-repeatable&quot;&gt;&lt;a href=&quot;#ensure-the-results-are-repeatable&quot; class=&quot;headerlink&quot; title=&quot;ensure the results are repeatable&quot;&gt;&lt;/a&gt;ensure the results are repeatable&lt;/h1&gt;&lt;p&gt;set.seed(7)  &lt;/p&gt;
+&lt;h1 id=&quot;load-the-library&quot;&gt;&lt;a href=&quot;#load-the-library&quot; class=&quot;headerlink&quot; title=&quot;load the library&quot;&gt;&lt;/a&gt;load the library&lt;/h1&gt;&lt;p&gt;library(mlbench)&lt;br&gt;library(caret)  &lt;/p&gt;
+&lt;h1 id=&quot;load-the-data-1&quot;&gt;&lt;a href=&quot;#load-the-data-1&quot; class=&quot;headerlink&quot; title=&quot;load the data&quot;&gt;&lt;/a&gt;load the data&lt;/h1&gt;&lt;p&gt;data(PimaIndiansDiabetes)  &lt;/p&gt;
+&lt;h1 id=&quot;define-the-control-using-a-random-forest-selection-function&quot;&gt;&lt;a href=&quot;#define-the-control-using-a-random-forest-selection-function&quot; class=&quot;headerlink&quot; title=&quot;define the control using a random forest selection function&quot;&gt;&lt;/a&gt;define the control using a random forest selection function&lt;/h1&gt;&lt;p&gt;control &amp;lt;- rfeControl(functions=rfFuncs, method=”cv”, number=10)  &lt;/p&gt;
+&lt;h1 id=&quot;run-the-RFE-algorithm&quot;&gt;&lt;a href=&quot;#run-the-RFE-algorithm&quot; class=&quot;headerlink&quot; title=&quot;run the RFE algorithm&quot;&gt;&lt;/a&gt;run the RFE algorithm&lt;/h1&gt;&lt;p&gt;results &amp;lt;- rfe(PimaIndiansDiabetes[,1:8],&lt;br&gt;               PimaIndiansDiabetes[,9], sizes=c(1:8),&lt;br&gt;               rfeControl=control,metric = “Accuracy”,ntree=100)  &lt;/p&gt;
+&lt;h1 id=&quot;summarize-the-results&quot;&gt;&lt;a href=&quot;#summarize-the-results&quot; class=&quot;headerlink&quot; title=&quot;summarize the results&quot;&gt;&lt;/a&gt;summarize the results&lt;/h1&gt;&lt;p&gt;print(results)  &lt;/p&gt;
+&lt;p&gt;Recursive feature selection&lt;br&gt;Outer resampling method: Cross-Validated (10 fold)&lt;br&gt;Resampling performance over subset size:&lt;/p&gt;
+&lt;p&gt; Variables Accuracy  Kappa AccuracySD KappaSD Selected&lt;br&gt;         1   0.7082 0.3030    0.04902  0.1181&lt;br&gt;         2   0.7330 0.3920    0.06703  0.1564&lt;br&gt;         3   0.7409 0.4115    0.06525  0.1582&lt;br&gt;         4   0.7512 0.4409    0.06988  0.1691&lt;br&gt;         5   0.7553 0.4452    0.07909  0.1911&lt;br&gt;         6   0.7618 0.4583    0.08094  0.1897&lt;br&gt;         7   0.7631 0.4620    0.08448  0.1927        *&lt;br&gt;         8   0.7617 0.4615    0.07810  0.1789         &lt;/p&gt;
+&lt;p&gt;The top 5 variables (out of 7):&lt;br&gt;   glucose, mass, age, pregnant, pedigree&lt;/p&gt;
+&lt;h1 id=&quot;list-the-chosen-features&quot;&gt;&lt;a href=&quot;#list-the-chosen-features&quot; class=&quot;headerlink&quot; title=&quot;list the chosen features&quot;&gt;&lt;/a&gt;list the chosen features&lt;/h1&gt;&lt;p&gt;predictors(results)  &lt;/p&gt;
+&lt;p&gt;[1] “glucose”  “mass”     “age”      “pregnant” “pedigree” “insulin”  “triceps”&lt;/p&gt;
+&lt;h1 id=&quot;plot-the-results&quot;&gt;&lt;a href=&quot;#plot-the-results&quot; class=&quot;headerlink&quot; title=&quot;plot the results&quot;&gt;&lt;/a&gt;plot the results&lt;/h1&gt;&lt;p&gt;plot(results, type=c(“g”, “o”)) &lt;/p&gt;
+&lt;p&gt;```&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;figures/rfe.png&quot; alt=&quot;image&quot;&gt;&lt;/p&gt;
+&lt;p&gt;从案例中可以看出，通过递归特征消除，发现用所有变量中的某7个自变量的模型是最好的，并且找出了最重要的5个特征。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;h2 id=&quot;4-结束语&quot;&gt;&lt;a href=&quot;#4-结束语&quot; class=&quot;headerlink&quot; title=&quot;4  结束语&quot;&gt;&lt;/a&gt;4  结束语&lt;/h2&gt;&lt;/blockquote&gt;
+&lt;p&gt;特征工程是门艺术，也是每一个数据科学家的必修课，因此每个数据科学家既应该像一个统计学家和工程师，又应该像一个艺术家。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;h3 id=&quot;参考文献&quot;&gt;&lt;a href=&quot;#参考文献&quot; class=&quot;headerlink&quot; title=&quot;参考文献&quot;&gt;&lt;/a&gt;参考文献&lt;/h3&gt;&lt;/blockquote&gt;
+&lt;p&gt;[1] Dash M, Liu H. Feature selection for classification[J]. Intelligent data analysis, 1997, 1(3): 131-156.&lt;/p&gt;
+&lt;p&gt;[2]&lt;a href=&quot;http://blog.datadive.net/selecting-good-features-part-i-univariate-selection/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;http://blog.datadive.net/selecting-good-features-part-i-univariate-selection/&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;[3]&lt;a href=&quot;http://blog.datadive.net/selecting-good-features-part-ii-linear-models-and-regularization/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;http://blog.datadive.net/selecting-good-features-part-ii-linear-models-and-regularization/&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;[4]&lt;a href=&quot;http://blog.datadive.net/selecting-good-features-part-iii-random-forests/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;http://blog.datadive.net/selecting-good-features-part-iii-random-forests/&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;[5]&lt;a href=&quot;http://blog.datadive.net/selecting-good-features-part-iv-stability-selection-rfe-and-everything-side-by-side/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;http://blog.datadive.net/selecting-good-features-part-iv-stability-selection-rfe-and-everything-side-by-side/&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;[6]&lt;a href=&quot;http://scikit-learn.org/stable/modules/feature_selection.html#univariate-feature-selection&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;http://scikit-learn.org/stable/modules/feature_selection.html#univariate-feature-selection&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;[7]&lt;a href=&quot;http://blog.csdn.net/qtlyx/article/details/50780400&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;http://blog.csdn.net/qtlyx/article/details/50780400&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;[8]&lt;a href=&quot;http://minepy.readthedocs.io/en/latest/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;http://minepy.readthedocs.io/en/latest/&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;[9]&lt;a href=&quot;https://cran.r-project.org/web/packages/minerva/minerva.pdf&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://cran.r-project.org/web/packages/minerva/minerva.pdf&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;[10]&lt;a href=&quot;http://machinelearningmastery.com/discover-feature-engineering-how-to-engineer-features-and-how-to-get-good-at-it/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;http://machinelearningmastery.com/discover-feature-engineering-how-to-engineer-features-and-how-to-get-good-at-it/&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;[11]&lt;a href=&quot;http://www.analyticsvidhya.com/blog/2016/03/select-important-variables-boruta-package/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;http://www.analyticsvidhya.com/blog/2016/03/select-important-variables-boruta-package/&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;[12]&lt;a href=&quot;https://www.zhihu.com/question/28641663&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://www.zhihu.com/question/28641663&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;[13]&lt;a href=&quot;https://cran.r-project.org/web/packages/smbinning/smbinning.pdf&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://cran.r-project.org/web/packages/smbinning/smbinning.pdf&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;[14]&lt;a href=&quot;http://www.scoringmodeling.com/rpackage/smbinning/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;http://www.scoringmodeling.com/rpackage/smbinning/&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;[15]蒋杭进. 最大信息系数及其在脑网络分析中的应用[D]. 中国科学院研究生院 (武汉物理与数学研究所), 2013.&lt;/p&gt;
+</content>
+    
+    <summary type="html">
+    
+      &lt;blockquote&gt;
+&lt;h2 id=&quot;1-特征选择的概述&quot;&gt;&lt;a href=&quot;#1-特征选择的概述&quot; class=&quot;headerlink&quot; title=&quot;1.特征选择的概述&quot;&gt;&lt;/a&gt;1.特征选择的概述&lt;/h2&gt;&lt;/blockquote&gt;
+&lt;h3 id=&quot;1-1-特征工程的简
+    
+    </summary>
+    
+      <category term="机器学习" scheme="http://yunxileo.github.io/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
+    
+      <category term="特征选择" scheme="http://yunxileo.github.io/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E7%89%B9%E5%BE%81%E9%80%89%E6%8B%A9/"/>
+    
+    
+      <category term="-特征选择" scheme="http://yunxileo.github.io/tags/%E7%89%B9%E5%BE%81%E9%80%89%E6%8B%A9/"/>
+    
+  </entry>
   
   <entry>
     <title>缺失值处理</title>
