@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
+  
+  <title>improve R code efficiency | 云稀里</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="众所周知，当我们利用R语言处理大型数据集时，for循环语句的运算效率非常低。有许多种方法可以提升你的代码运算效率，但或许你更想了解运算效率能得到多大的提升。本文将介绍几种适用于大数据领域的方法，包括简单的逻辑调整设计、并行处理和Rcpp的运用，利用这些方法你可以轻松地处理1亿行以上的数据集。让我们尝试提升往数据框中添加一个新变量过程(该过程中包含循环和判断语句)的运算效率：
+实验环境：
+123R">
+<meta property="og:type" content="article">
+<meta property="og:title" content="improve R code efficiency">
+<meta property="og:url" content="http://yunxileo.github.io/2017/02/06/improve-R-code-efficiency/index.html">
+<meta property="og:site_name" content="云稀里">
+<meta property="og:description" content="众所周知，当我们利用R语言处理大型数据集时，for循环语句的运算效率非常低。有许多种方法可以提升你的代码运算效率，但或许你更想了解运算效率能得到多大的提升。本文将介绍几种适用于大数据领域的方法，包括简单的逻辑调整设计、并行处理和Rcpp的运用，利用这些方法你可以轻松地处理1亿行以上的数据集。让我们尝试提升往数据框中添加一个新变量过程(该过程中包含循环和判断语句)的运算效率：
+实验环境：
+123R">
+<meta property="og:updated_time" content="2017-02-06T02:53:51.571Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="improve R code efficiency">
+<meta name="twitter:description" content="众所周知，当我们利用R语言处理大型数据集时，for循环语句的运算效率非常低。有许多种方法可以提升你的代码运算效率，但或许你更想了解运算效率能得到多大的提升。本文将介绍几种适用于大数据领域的方法，包括简单的逻辑调整设计、并行处理和Rcpp的运用，利用这些方法你可以轻松地处理1亿行以上的数据集。让我们尝试提升往数据框中添加一个新变量过程(该过程中包含循环和判断语句)的运算效率：
+实验环境：
+123R">
+  
+    <link rel="alternative" href="/atom.xml" title="云稀里" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+      <link href="//cdn.bootcss.com/animate.css/3.5.0/animate.min.css" rel="stylesheet">
+  
+  
+  
+      <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+      <link href="//cdn.bootcss.com/pace/1.0.2/themes/blue/pace-theme-minimal.css" rel="stylesheet">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+  <link href="//cdn.bootcss.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  
+  
+      <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+  
+  <script src="//cdn.bootcss.com/jquery/1.9.1/jquery.min.js"></script>
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.9/clipboard.min.js"></script>
+  <script>
+      var yiliaConfig = {
+          fancybox: true,
+          animate: true,
+          isHome: false,
+          isPost: true,
+          isArchive: false,
+          isTag: false,
+          isCategory: false,
+          open_in_new: false,
+          fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
+          scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.0.9/scrollreveal.min.js"
+      }
+  </script>
+
+  
+      <script>
+          yiliaConfig.rootUrl = "/";
+      </script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+  
+  
+</head>
+<body>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><!--[if lt IE 9]>
+<style> body { background: orange !important;} div#container { display: none;} </style>
+<p id="ie-updater">
+    
+        珍爱生命，远离 IE！<br>本站不支持 IE6/7/8，请升级浏览器！<br>
+    
+    <a href="//www.bing.com/search?q=Chrome" target="_blank">Chrome</a>, <a href="//www.bing.com/search?q=Firefox" target="_blank">Firefox</a><br>
+    Hexo Theme <a href="//github.com/MOxFIVE/hexo-theme-yelee" target="_blank">Yelee</a> by MOxFIVE
+</p>
+<![endif]-->
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            <img src="/img/avatar.png" class="animated zoomIn">
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/">yunxileo</a></h1>
+        </hgroup>
+
+        
+        <p class="header-subtitle">莫厌追欢笑语频，寻思离乱好伤神。闲来屈指从头数，得见清平有几人</p>
+        
+                
+
+
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">标签云</a></li>
+                        
+                            <li><a href="/about/">关于我</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" target="_blank" href="mailto:yunxileo@gmail.com" title="Email"></a>
+                            
+                                <a class="fa GitHub" target="_blank" href="#" title="GitHub"></a>
+                            
+                                <a class="fa RSS" target="_blank" href="/atom.xml" title="RSS"></a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/R语言编程/">-R语言编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/特征选择/">-特征选择</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/缺失值处理/">缺失值处理</a></li></ul>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a target="_blank" class="main-nav-link switch-friends-link" href="https://hexo.io">Hexo</a>
+                    
+                      <a target="_blank" class="main-nav-link switch-friends-link" href="https://pages.github.com/">GitHub</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">专注于前端</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">yunxileo</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                <img src="/img/avatar.png" class="animated zoomIn">
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">yunxileo</a></h1>
+            </hgroup>
+            
+            <p class="header-subtitle">莫厌追欢笑语频，寻思离乱好伤神。闲来屈指从头数，得见清平有几人</p>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">标签云</a></li>
+                
+                    <li><a href="/about/">关于我</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" target="_blank" href="mailto:yunxileo@gmail.com" title="Email"></a>
+                            
+                                <a class="fa GitHub" target="_blank" href="#" title="GitHub"></a>
+                            
+                                <a class="fa RSS" target="_blank" href="/atom.xml" title="RSS"></a>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+    <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
+</nav>
+      <div class="body-wrap"><article id="post-improve-R-code-efficiency" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2017/02/06/improve-R-code-efficiency/" class="article-date">
+      <time datetime="2017-02-06T02:42:13.000Z" itemprop="datePublished">2017-02-06</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      improve R code efficiency
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/R语言/">R语言</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/R语言编程/">-R语言编程</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <p>众所周知，当我们利用R语言处理大型数据集时，for循环语句的运算效率非常低。有许多种方法可以提升你的代码运算效率，但或许你更想了解运算效率能得到多大的提升。本文将介绍几种适用于大数据领域的方法，包括简单的逻辑调整设计、并行处理和Rcpp的运用，利用这些方法你可以轻松地处理1亿行以上的数据集。<br>让我们尝试提升往数据框中添加一个新变量过程(该过程中包含循环和判断语句)的运算效率：</p>
+<p>实验环境：</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">R version 3<span class="selector-class">.3</span><span class="selector-class">.1</span> (<span class="number">2016</span>-<span class="number">06</span>-<span class="number">21</span>)</span><br><span class="line"><span class="selector-tag">Platform</span>: <span class="selector-tag">x86_64-w64-mingw32</span>/<span class="selector-tag">x64</span> (<span class="number">64</span>-bit)</span><br><span class="line"><span class="selector-tag">Running</span> <span class="selector-tag">under</span>: <span class="selector-tag">Windows</span> <span class="selector-tag">7</span> <span class="selector-tag">x64</span> (build <span class="number">7601</span>) <span class="selector-tag">Service</span> <span class="selector-tag">Pack</span> <span class="selector-tag">1</span></span><br></pre></td></tr></table></figure>
+<p>实验数据集　</p>
+<figure class="highlight haskell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="title">col1</span> &lt;- runif (<span class="number">12</span>^<span class="number">5</span>, <span class="number">0</span>, <span class="number">2</span>)</span><br><span class="line"><span class="title">col2</span> &lt;- rnorm (<span class="number">12</span>^<span class="number">5</span>, <span class="number">0</span>, <span class="number">2</span>)</span><br><span class="line"><span class="title">col3</span> &lt;- rpois (<span class="number">12</span>^<span class="number">5</span>, <span class="number">3</span>)</span><br><span class="line"><span class="title">col4</span> &lt;- rchisq (<span class="number">12</span>^<span class="number">5</span>, <span class="number">2</span>)</span><br><span class="line"><span class="title">df</span> &lt;- <span class="class"><span class="keyword">data</span>.frame (<span class="title">col1</span>, <span class="title">col2</span>, <span class="title">col3</span>, <span class="title">col4</span>)</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<h3 id="0-原始方法"><a href="#0-原始方法" class="headerlink" title="0.原始方法"></a>0.原始方法</h3></blockquote>
+<p>逐行判断该数据框(df)的总和是否大于4，如果该条件满足，则对应的新变量数值为’greaterthan’，否则赋值为’lesserthan’。</p>
+<figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta"># Original R code: Before vectorization and pre-allocation</span></span><br><span class="line">system.time(&#123;</span><br><span class="line">  <span class="keyword">for</span> (i <span class="keyword">in</span> <span class="number">1</span>:nrow(df)) &#123; <span class="meta"># for every row</span></span><br><span class="line">    <span class="keyword">if</span> ((df[i, <span class="string">'col1'</span>] + df[i, <span class="string">'col2'</span>] + df[i, <span class="string">'col3'</span>] + df[i, <span class="string">'col4'</span>]) &gt; <span class="number">4</span>) &#123; <span class="meta"># check <span class="meta-keyword">if</span> &gt; 4</span></span><br><span class="line">      df[i, <span class="number">5</span>] &lt;- <span class="string">"greater_than_4"</span> <span class="meta"># assign 5th column</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      df[i, <span class="number">5</span>] &lt;- <span class="string">"lesser_than_4"</span> <span class="meta"># assign 5th column</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p> 用户   系统   流逝<br>810.11 146.06 965.80 </p>
+<blockquote>
+<h3 id="1-向量化处理和预设数据库结构"><a href="#1-向量化处理和预设数据库结构" class="headerlink" title="1.向量化处理和预设数据库结构"></a>1.向量化处理和预设数据库结构</h3></blockquote>
+<p>循环运算前，记得预先设置好数据结构和输出变量的长度和类型，千万别在循环过程中渐进性地增加数据长度。接下来，我们将探究向量化处理是如何提高处理数据的运算速度。</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># after vectorization and pre-allocation</span></span><br><span class="line">output &lt;- character (nrow(df)) <span class="comment"># initialize output vector</span></span><br><span class="line">system.time(&#123;</span><br><span class="line">  <span class="keyword">for</span> (i <span class="keyword">in</span> <span class="number">1</span><span class="symbol">:nrow</span>(df)) &#123;</span><br><span class="line">    <span class="keyword">if</span> ((df[i, <span class="string">'col1'</span>] + df[i, <span class="string">'col2'</span>] + df[i, <span class="string">'col3'</span>] + df[i, <span class="string">'col4'</span>]) &gt; <span class="number">4</span>) &#123;</span><br><span class="line">      output[i] &lt;- <span class="string">"greater_than_4"</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      output[i] &lt;- <span class="string">"lesser_than_4"</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>用户  系统  流逝<br>28.27  0.05 28.98 </p>
+<blockquote>
+<h3 id="2-将条件语句的判断条件移至循环外"><a href="#2-将条件语句的判断条件移至循环外" class="headerlink" title="2.将条件语句的判断条件移至循环外"></a>2.将条件语句的判断条件移至循环外</h3></blockquote>
+<p>将条件判断语句移至循环外可以提升代码的运算速度，接下来本文将利用包含100,000行数据至1,000,000行数据的数据集进行测试：</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># after vectorization and pre-allocation, taking the condition checking outside the loop.</span></span><br><span class="line">output &lt;- character (nrow(df))</span><br><span class="line">condition &lt;- (df$col1 + df$col2 + df$col3 + df$col4) &gt; <span class="number">4</span>  <span class="comment"># condition check outside the loop</span></span><br><span class="line">system.time(&#123;</span><br><span class="line">  <span class="keyword">for</span> (i <span class="keyword">in</span> <span class="number">1</span><span class="symbol">:nrow</span>(df)) &#123;</span><br><span class="line">    <span class="keyword">if</span> (condition[i]) &#123;</span><br><span class="line">      output[i] &lt;- <span class="string">"greater_than_4"</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      output[i] &lt;- <span class="string">"lesser_than_4"</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"> </span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>用户 系统 流逝<br>0.37 0.01 0.39 </p>
+<blockquote>
+<h3 id="3-只在条件语句为真时执行循环过程"><a href="#3-只在条件语句为真时执行循环过程" class="headerlink" title="3.只在条件语句为真时执行循环过程"></a>3.只在条件语句为真时执行循环过程</h3></blockquote>
+<p>另一种优化方法是预先将输出变量赋值为条件语句不满足时的取值，然后只在条件语句为真时执行循环过程。此时，运算速度的提升程度取决于条件状态中真值的比例。<br>本部分的测试将和case(2)部分进行比较，和预想的结果一致，该方法确实提升了运算效率。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">output &lt;- c(rep(&quot;lesser_than_4&quot;, nrow(df)))</span><br><span class="line">condition &lt;- (df$col1 + df$col2 + df$col3 + df$col4) &gt; 4</span><br><span class="line">system.time(&#123;</span><br><span class="line">    for (i in (1:nrow(df))[condition]) &#123;  # run loop only for true conditions</span><br><span class="line">        if (condition[i]) &#123;</span><br><span class="line">            output[i] &lt;- &quot;greater_than_4&quot;</span><br><span class="line">        &#125; </span><br><span class="line">    &#125;</span><br><span class="line">   </span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<blockquote>
+<h3 id="4-尽可能地使用-ifelse-语句"><a href="#4-尽可能地使用-ifelse-语句" class="headerlink" title="4.尽可能地使用 ifelse()语句"></a>4.尽可能地使用 ifelse()语句</h3></blockquote>
+<p>利用ifelse()语句可以使你的代码更加简便。ifelse()的句法格式类似于if()函数，但其运算速度却有了巨大的提升。即使是在没有预设数据结构且没有简化条件语句的情况下，其运算效率仍高于上述的两种方法。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">system.time(&#123;</span><br><span class="line">  output &lt;- ifelse ( rowSums(df) &gt; 4, &quot;greater_than_4&quot;, &quot;lesser_than_4&quot;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>用户 系统 流逝 0.08 0.00 0.07  </p>
+<blockquote>
+<h3 id="5-使用-which-语句"><a href="#5-使用-which-语句" class="headerlink" title="5.使用 which()语句"></a>5.使用 which()语句</h3></blockquote>
+<p>利用which()语句来筛选数据集，我们可以达到Rcpp三分之一的运算速率。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">system.time(&#123;</span><br><span class="line">  want = which(rowSums(df) &gt; 4)</span><br><span class="line">  output = rep(&quot;less than 4&quot;, times = nrow(df))</span><br><span class="line">  output[want] = &quot;greater than 4&quot;</span><br><span class="line">&#125;) </span><br><span class="line"># nrow = 3 Million rows (approx)</span><br></pre></td></tr></table></figure>
+<p>用户 系统 流逝 0.02 0.00 0.01 </p>
+<blockquote>
+<h3 id="6-利用apply族函数来替代for循环语句"><a href="#6-利用apply族函数来替代for循环语句" class="headerlink" title="6.利用apply族函数来替代for循环语句"></a>6.利用apply族函数来替代for循环语句</h3></blockquote>
+<p>本部分将利用apply()函数来计算上文所提到的案例，并将其与向量化的循环语句进行对比。该方法的运算效率优于原始方法，但劣于ifelse()和将条件语句置于循环外端的方法。该方法非常有用，但是当你面对复杂的情形时，你需要灵活运用该函数。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"># apply family</span><br><span class="line">system.time(&#123;</span><br><span class="line">  myfunc &lt;- function(x) &#123;</span><br><span class="line">    if ((x[&apos;col1&apos;] + x[&apos;col2&apos;] + x[&apos;col3&apos;] + x[&apos;col4&apos;]) &gt; 4) &#123;</span><br><span class="line">      &quot;greater_than_4&quot;</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">      &quot;lesser_than_4&quot;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  output &lt;- apply(df[, c(1:4)], 1, FUN=myfunc)  # apply &apos;myfunc&apos; on every row</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>用户 系统 流逝 1.4  0.0  1.4 </p>
+<blockquote>
+<h3 id="7-利用compiler包中的字节码编译函数cmpfun"><a href="#7-利用compiler包中的字节码编译函数cmpfun" class="headerlink" title="7.利用compiler包中的字节码编译函数cmpfun()"></a>7.利用compiler包中的字节码编译函数cmpfun()</h3></blockquote>
+<p>这可能不是说明字节码编译有效性的最好例子，但是对于更复杂的函数而言，字节码编译将会表现地十分优异，因此我们应当了解下该函数。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># byte code compilation</span><br><span class="line">library(compiler)</span><br><span class="line">myFuncCmp &lt;- cmpfun(myfunc)</span><br><span class="line">system.time(&#123;</span><br><span class="line">  output &lt;- apply(df[, c (1:4)], 1, FUN=myFuncCmp)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>用户 系统 流逝 1.10 0.00 1.11  </p>
+<blockquote>
+<h3 id="8-利用Rcpp"><a href="#8-利用Rcpp" class="headerlink" title="8.利用Rcpp"></a>8.利用Rcpp</h3></blockquote>
+<p>截至目前，我们已经测试了好几种提升运算效率的方法，其中最佳的方法是利用ifelse()函数。如果我们将数据量增大十倍，运算效率将会变成啥样的呢？接下来我们将利用Rcpp来实现该运算过程，并将其与ifelse()进行比较。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">library(Rcpp)</span><br><span class="line">sourceCpp(&quot;MyFunc.cpp&quot;)</span><br><span class="line">system.time (output &lt;- myFunc(df))</span><br></pre></td></tr></table></figure>
+<p>see Rcpp function below</p>
+<p>下面是利用C++语言编写的函数代码，将其保存为“MyFunc.cpp”并利用sourceCpp进行调用。</p>
+<figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Source for MyFunc.cpp</span></span><br><span class="line"><span class="meta">#include </span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="title">Rcpp</span>;</span><br><span class="line"><span class="comment">// [[Rcpp::export]]</span></span><br><span class="line"><span class="function">CharacterVector <span class="title">myFunc</span>(<span class="params">DataFrame x</span>) </span>&#123;</span><br><span class="line">  NumericVector col1 = <span class="keyword">as</span>(x[<span class="string">"col1"</span>]);</span><br><span class="line">  NumericVector col2 = <span class="keyword">as</span>(x[<span class="string">"col2"</span>]);</span><br><span class="line">  NumericVector col3 = <span class="keyword">as</span>(x[<span class="string">"col3"</span>]);</span><br><span class="line">  NumericVector col4 = <span class="keyword">as</span>(x[<span class="string">"col4"</span>]);</span><br><span class="line">  <span class="keyword">int</span> n = col1.size();</span><br><span class="line">  <span class="function">CharacterVector <span class="title">out</span>(<span class="params">n</span>)</span>;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>; i <span class="number">4</span>)&#123;</span><br><span class="line">      <span class="keyword">out</span>[i] = <span class="string">"greater_than_4"</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">out</span>[i] = <span class="string">"lesser_than_4"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">out</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<h3 id="9-利用并行运算"><a href="#9-利用并行运算" class="headerlink" title="9.利用并行运算"></a>9.利用并行运算</h3></blockquote>
+<p>并行运算的代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"># parallel processing</span><br><span class="line">library(foreach)</span><br><span class="line">library(doSNOW)</span><br><span class="line">cl &lt;- makeCluster(4, type=&quot;SOCK&quot;) # for 4 cores machine</span><br><span class="line">registerDoSNOW (cl)</span><br><span class="line">condition &lt;- (df$col1 + df$col2 + df$col3 + df$col4) &gt; 4</span><br><span class="line"># parallelization with vectorization</span><br><span class="line">system.time(&#123;</span><br><span class="line">  output &lt;- foreach(i = 1:nrow(df), .combine=c) %dopar% &#123;</span><br><span class="line">    if (condition[i]) &#123;</span><br><span class="line">      return(&quot;greater_than_4&quot;)</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">      return(&quot;lesser_than_4&quot;)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p> 用户   系统   流逝 186.72   7.13 202.87 </p>
+<blockquote>
+<h3 id="10-尽早地移除变量并回收内存"><a href="#10-尽早地移除变量并回收内存" class="headerlink" title="10.尽早地移除变量并回收内存"></a>10.尽早地移除变量并回收内存</h3></blockquote>
+<p>在进行冗长的循环计算前，尽早地将不需要的变量移除掉，使用rm()函数。在每次循环迭代运算结束时利用gc()函数恢复内存也可以提升运算速率。</p>
+<blockquote>
+<h3 id="11-利用内存较小的数据结构"><a href="#11-利用内存较小的数据结构" class="headerlink" title="11.利用内存较小的数据结构"></a>11.利用内存较小的数据结构</h3></blockquote>
+<p>data.table()是一个很好的例子，因为它可以减少数据的内存，这有助于加快运算速率。</p>
+<figure class="highlight haskell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="title">library</span>(<span class="class"><span class="keyword">data</span>.table)</span></span><br><span class="line"><span class="title">dt</span> &lt;- <span class="class"><span class="keyword">data</span>.table(<span class="title">df</span>)  # create the <span class="keyword">data</span>.table</span></span><br><span class="line"><span class="title">system</span>.time(&#123;</span><br><span class="line">  for (i <span class="keyword">in</span> <span class="number">1</span>:nrow (dt)) &#123;</span><br><span class="line">    <span class="keyword">if</span> ((dt[i, col1] + dt[i, col2] + dt[i, col3] + dt[i, col4]) &gt; <span class="number">4</span>) &#123;</span><br><span class="line">      dt[i, col5:=<span class="string">"greater_than_4"</span>]  # assign the output <span class="keyword">as</span> <span class="number">5</span>th column</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      dt[i, col5:=<span class="string">"lesser_than_4"</span>]  # assign the output <span class="keyword">as</span> <span class="number">5</span>th column</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>用户   系统   流逝 </p>
+<p>629.89   0.31 640.91 </p>
+<blockquote>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3></blockquote>
+<p>方法：速度， nrow(df)/time_taken = n 行每秒</p>
+<p>原始方法：1X, 856.2255行每秒(正则化为1)<br>向量化方法：738X, 631578行每秒<br>只考虑真值情况：1002X，857142.9行每秒<br>ifelse：1752X，1500000行每秒<br>which：8806X，7540364行每秒<br>Rcpp：13476X，11538462行每秒</p>
+<p>参考链接：(<a href="http://datascienceplus.com/strategies-to-speedup-r-code/" target="_blank" rel="external">http://datascienceplus.com/strategies-to-speedup-r-code/</a>)</p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2017/02/06/improve-R-code-efficiency/">improve R code efficiency</a></p>
+        <p><span>文章作者:</span><a href="/" title="回到主页">yunxileo</a></p>
+        <p><span>发布时间:</span>2017-02-06, 10:42:13</p>
+        <p><span>最后更新:</span>2017-02-06, 10:53:51</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2017/02/06/improve-R-code-efficiency/" title="improve R code efficiency">http://yunxileo.github.io/2017/02/06/improve-R-code-efficiency/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://yunxileo.github.io/2017/02/06/improve-R-code-efficiency/　　作者: yunxileo" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+    <nav id="article-nav">
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2016/09/27/特征选择/">
+                    Feature Selection
+                </a>
+            </div>
+        
+    </nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#0-原始方法"><span class="toc-number">1.</span> <span class="toc-text">0.原始方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-向量化处理和预设数据库结构"><span class="toc-number">2.</span> <span class="toc-text">1.向量化处理和预设数据库结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-将条件语句的判断条件移至循环外"><span class="toc-number">3.</span> <span class="toc-text">2.将条件语句的判断条件移至循环外</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-只在条件语句为真时执行循环过程"><span class="toc-number">4.</span> <span class="toc-text">3.只在条件语句为真时执行循环过程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-尽可能地使用-ifelse-语句"><span class="toc-number">5.</span> <span class="toc-text">4.尽可能地使用 ifelse()语句</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-使用-which-语句"><span class="toc-number">6.</span> <span class="toc-text">5.使用 which()语句</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-利用apply族函数来替代for循环语句"><span class="toc-number">7.</span> <span class="toc-text">6.利用apply族函数来替代for循环语句</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-利用compiler包中的字节码编译函数cmpfun"><span class="toc-number">8.</span> <span class="toc-text">7.利用compiler包中的字节码编译函数cmpfun()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-利用Rcpp"><span class="toc-number">9.</span> <span class="toc-text">8.利用Rcpp</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9-利用并行运算"><span class="toc-number">10.</span> <span class="toc-text">9.利用并行运算</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#10-尽早地移除变量并回收内存"><span class="toc-number">11.</span> <span class="toc-text">10.尽早地移除变量并回收内存</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#11-利用内存较小的数据结构"><span class="toc-number">12.</span> <span class="toc-text">11.利用内存较小的数据结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#总结"><span class="toc-number">13.</span> <span class="toc-text">总结</span></a></li></ol>
+</div>
+<style>
+    .left-col .switch-btn {
+        display: none;
+    }
+    .left-col .switch-area {
+        display: none;
+    }
+</style>
+
+<input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+<script>
+    var valueHide = "隐藏目录";
+    var valueShow = "显示目录";
+
+    if ($(".left-col").is(":hidden")) {
+        $("#tocButton").attr("value", valueShow);
+    }
+
+    $("#tocButton").click(function() {
+        if ($("#toc").is(":hidden")) {
+            $("#tocButton").attr("value", valueHide);
+            $("#toc").slideDown(320);
+            $(".switch-btn, .switch-area").fadeOut(300);
+        }
+        else {
+            $("#tocButton").attr("value", valueShow);
+            $("#toc").slideUp(350);
+            $(".switch-btn, .switch-area").fadeIn(500);
+        }
+    })
+
+    if ($(".toc").length < 1) {
+        $("#toc, #tocButton").hide();
+        $(".switch-btn, .switch-area").show();
+    }
+</script>
+
+
+
+
+
+    
+<div class="share">
+    
+        <div class="bdsharebuttonbox">
+            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
+            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
+            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
+            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
+            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
+            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></i></a>
+        </div>
+        <script>
+            window._bd_share_config={
+                "common":{"bdSnsKey":{},"bdText":"improve R code efficiency　| 云稀里　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+        </script>
+    
+
+    
+</div>
+
+
+
+
+
+
+
+    
+      <div class="duoshuo" id="comments">
+    <!-- 多说评论框 start -->
+    <div class="ds-thread" data-thread-key="2017/02/06/improve-R-code-efficiency/" data-title="improve R code efficiency" data-url="http://yunxileo.github.io/2017/02/06/improve-R-code-efficiency/"></div>
+    <!-- 多说评论框 end -->
+    <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+    <script type="text/javascript">
+    var duoshuoQuery = {short_name:"yunxileo"};
+    (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0] 
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+    </script>
+    <!-- 多说公共JS代码 end -->
+</div>
+
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/2016/09/27/特征选择/" title="下一篇: Feature Selection">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2017/02/06/improve-R-code-efficiency/">improve R code efficiency</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/27/特征选择/">Feature Selection</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/05/19/缺失值处理/">缺失值处理</a></li></ul>
+
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                <i class="fa fa-copyright"></i> 
+                2016-2017 yunxileo
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的博客框架">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减 Hexo 双栏博客主题">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" >本站到访数: 
+                            <span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>, </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit">本页阅读量: 
+                            <span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+    </div>
+    
+<script data-main="/js/main.js" src="//cdn.bootcss.com/require.js/2.1.22/require.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var iPad = window.navigator.userAgent.indexOf('iPad');
+            if (iPad > -1 || $(".left-col").css("display") === "none") {
+                var bgColorList = ["#9db3f4", "#414141", "#e5a859", "#f5dfc6", "#c084a0", "#847e72", "#cd8390", "#996731"];
+                var bgColor = Math.ceil(Math.random() * (bgColorList.length - 1));
+                $("body").css({"background-color": bgColorList[bgColor], "background-size": "cover"});
+            }
+            else {
+                var backgroundnum = 5;
+                var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+                $("body").css({"background": backgroundimg, "background-attachment": "fixed", "background-size": "cover"});
+            }
+        })
+    </script>
+
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+</div>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  </div><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+</body>
+</html>

@@ -3,12 +3,12 @@
 <head>
   <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
   
-  <title>model_select | 云稀里</title>
+  <title>Feature Selection | 云稀里</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="1.特征选择的概述
 1.1  特征工程的简介相信每一个数据人都深刻地体会过这样一句话：“特征工程做不好，调参调到老”。业界更有这样的说法：“数据和特征决定了机器学习的上限，而模型和算法只是逼近这个上限而已”。由此可见，特征工程在机器学习中占有相当重要的地位。到底什么是特征工程，我认为并没有确切的定义，个人是这样理解的：特征工程是利用业务领域和数据科学领域的相关知识，创建使机器学习算法达到最优的特">
 <meta property="og:type" content="article">
-<meta property="og:title" content="model_select">
+<meta property="og:title" content="Feature Selection">
 <meta property="og:url" content="http://yunxileo.github.io/2016/09/27/特征选择/index.html">
 <meta property="og:site_name" content="云稀里">
 <meta property="og:description" content="1.特征选择的概述
@@ -18,9 +18,9 @@
 <meta property="og:image" content="http://yunxileo.github.io/img/bar.png">
 <meta property="og:image" content="http://yunxileo.github.io/img/rf.png">
 <meta property="og:image" content="http://yunxileo.github.io/img/rfe.png">
-<meta property="og:updated_time" content="2016-09-27T08:45:38.796Z">
+<meta property="og:updated_time" content="2017-02-06T02:54:49.764Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="model_select">
+<meta name="twitter:title" content="Feature Selection">
 <meta name="twitter:description" content="1.特征选择的概述
 1.1  特征工程的简介相信每一个数据人都深刻地体会过这样一句话：“特征工程做不好，调参调到老”。业界更有这样的说法：“数据和特征决定了机器学习的上限，而模型和算法只是逼近这个上限而已”。由此可见，特征工程在机器学习中占有相当重要的地位。到底什么是特征工程，我认为并没有确切的定义，个人是这样理解的：特征工程是利用业务领域和数据科学领域的相关知识，创建使机器学习算法达到最优的特">
 <meta name="twitter:image" content="http://yunxileo.github.io/img/process.png">
@@ -175,7 +175,7 @@
                 
                 <section class="switch-part switch-part2">
                     <div class="widget tagcloud" id="js-tagcloud">
-                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/特征选择/">-特征选择</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/缺失值处理/">缺失值处理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/逻辑回归/">逻辑回归</a></li></ul>
+                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/R语言编程/">-R语言编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/特征选择/">-特征选择</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/缺失值处理/">缺失值处理</a></li></ul>
                     </div>
                 </section>
                 
@@ -267,7 +267,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      model_select
+      Feature Selection
     </h1>
   
 
@@ -547,12 +547,12 @@ $$IV=\sum_{i=1}^{3}IV_{i}$$
   
     
     <div class="copyright">
-        <p><span>本文标题:</span><a href="/2016/09/27/特征选择/">model_select</a></p>
+        <p><span>本文标题:</span><a href="/2016/09/27/特征选择/">Feature Selection</a></p>
         <p><span>文章作者:</span><a href="/" title="回到主页">yunxileo</a></p>
         <p><span>发布时间:</span>2016-09-27, 15:35:15</p>
-        <p><span>最后更新:</span>2016-09-27, 16:45:38</p>
+        <p><span>最后更新:</span>2017-02-06, 10:54:49</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2016/09/27/特征选择/" title="model_select">http://yunxileo.github.io/2016/09/27/特征选择/</a>
+            <span>原始链接:</span><a class="post-url" href="/2016/09/27/特征选择/" title="Feature Selection">http://yunxileo.github.io/2016/09/27/特征选择/</a>
             <span class="copy-path" data-clipboard-text="原文: http://yunxileo.github.io/2016/09/27/特征选择/　　作者: yunxileo" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>
@@ -564,6 +564,12 @@ $$IV=\sum_{i=1}^{3}IV_{i}$$
 
 
     <nav id="article-nav">
+        
+            <div id="article-nav-newer" class="article-nav-title">
+                <a href="/2017/02/06/improve-R-code-efficiency/">
+                    improve R code efficiency
+                </a>
+            </div>
         
         
             <div id="article-nav-older" class="article-nav-title">
@@ -636,7 +642,7 @@ $$IV=\sum_{i=1}^{3}IV_{i}$$
         </div>
         <script>
             window._bd_share_config={
-                "common":{"bdSnsKey":{},"bdText":"model_select　| 云稀里　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+                "common":{"bdSnsKey":{},"bdText":"Feature Selection　| 云稀里　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
         </script>
     
 
@@ -652,7 +658,7 @@ $$IV=\sum_{i=1}^{3}IV_{i}$$
     
       <div class="duoshuo" id="comments">
     <!-- 多说评论框 start -->
-    <div class="ds-thread" data-thread-key="2016/09/27/特征选择/" data-title="model_select" data-url="http://yunxileo.github.io/2016/09/27/特征选择/"></div>
+    <div class="ds-thread" data-thread-key="2016/09/27/特征选择/" data-title="Feature Selection" data-url="http://yunxileo.github.io/2016/09/27/特征选择/"></div>
     <!-- 多说评论框 end -->
     <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
     <script type="text/javascript">
@@ -676,7 +682,9 @@ $$IV=\sum_{i=1}^{3}IV_{i}$$
 
     <div class="scroll" id="post-nav-button">
         
-            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
+            <a href="/2017/02/06/improve-R-code-efficiency/" title="上一篇: improve R code efficiency">
+                <i class="fa fa-angle-left"></i>
+            </a>
         
 
         <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
@@ -688,7 +696,7 @@ $$IV=\sum_{i=1}^{3}IV_{i}$$
         
     </div>
 
-    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2016/09/27/特征选择/">model_select</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/05/19/缺失值处理/">缺失值处理</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/05/16/逻辑回归的前世今生/">logistic_regression</a></li></ul>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2017/02/06/improve-R-code-efficiency/">improve R code efficiency</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/27/特征选择/">Feature Selection</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/05/19/缺失值处理/">缺失值处理</a></li></ul>
 
 
 
@@ -702,7 +710,7 @@ $$IV=\sum_{i=1}^{3}IV_{i}$$
         <div id="footer-info">
             <div class="footer-left">
                 <i class="fa fa-copyright"></i> 
-                2016 yunxileo
+                2016-2017 yunxileo
             </div>
             <div class="footer-right">
                 <a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的博客框架">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减 Hexo 双栏博客主题">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
