@@ -3,6 +3,49 @@
 
     
   <url>
+    <loc>http://yunxileo.github.io/2017/02/06/improve-R-code-efficiency/</loc>
+    <lastmod>2017-02-06T03:03:59.828Z</lastmod>
+    <data>
+        <display>
+        <title>improve R code efficiency</title>
+        <pubTime>2017-02-06T02:42:13.000Z</pubTime>
+        
+        <tag>-R语言编程 </tag>
+         
+         
+           
+             
+              <breadCrumb title="R语言" url="http://yunxileo.github.io/categories/R%E8%AF%AD%E8%A8%80/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://yunxileo.github.io/2016/05/16/%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%E7%9A%84%E5%89%8D%E4%B8%96%E4%BB%8A%E7%94%9F/</loc>
+    <lastmod>2017-02-06T03:01:08.495Z</lastmod>
+    <data>
+        <display>
+        <title>逻辑回归的前世今生</title>
+        <pubTime>2016-05-16T15:57:47.000Z</pubTime>
+        
+        <tag>逻辑回归 </tag>
+         
+         
+           
+             
+              <breadCrumb title="机器学习" url="http://yunxileo.github.io/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
+          
+             
+              <breadCrumb title="逻辑回归" url="http://yunxileo.github.io/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://yunxileo.github.io/2016/09/27/%E7%89%B9%E5%BE%81%E9%80%89%E6%8B%A9/</loc>
     <lastmod>2017-02-06T02:54:49.764Z</lastmod>
     <data>
@@ -19,26 +62,6 @@
           
              
               <breadCrumb title="特征选择" url="http://yunxileo.github.io/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E7%89%B9%E5%BE%81%E9%80%89%E6%8B%A9/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://yunxileo.github.io/2017/02/06/improve-R-code-efficiency/</loc>
-    <lastmod>2017-02-06T02:53:51.571Z</lastmod>
-    <data>
-        <display>
-        <title>improve R code efficiency</title>
-        <pubTime>2017-02-06T02:42:13.000Z</pubTime>
-        
-        <tag>-R语言编程 </tag>
-         
-         
-           
-             
-              <breadCrumb title="R语言" url="http://yunxileo.github.io/categories/R%E8%AF%AD%E8%A8%80/"/>
           
         </display>
     </data>
